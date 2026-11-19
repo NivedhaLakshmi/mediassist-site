@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MediAssist</title>
+<meta name="description" content="Patient records. Trusted sources. One answer. A local AI assistant for clinical teams.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&family=JetBrains+Mono:wght@500;700&display=swap">
+<script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+<style>
+/* Pastel system shared with the poster. Colour = source: teal patient's reports, blue knowledge base, peach public sources (MCP), slate input/code. */
+:root{--bg:#f4f7f9;--paper:#fff;--ink:#1e2a35;--ink2:#43525d;--mute:#5b6a74;--line:#dde5ea;--teal:#1a7189;--ti:#134a59;--tp:#9fd3e0;--tl:#c4e5ee;--ts:#e2f0f5;--blue:#355f9e;--bp:#a9c4ea;--bl:#c6d8f2;--bs:#e8eff9;--peach:#b5492f;--pp:#f0a58c;--pl:#f6c3b3;--ps:#fdeeea;--slate:#2f4a5e;--sp:#aab8c6;--ss:#e6ecf0;--mint:#e6f4ec;--mi:#2a6a4b;
+ --f-h:"Nunito","Nunito Sans",system-ui,sans-serif;--f-b:"Nunito Sans",system-ui,-apple-system,sans-serif;--f-m:"JetBrains Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-b);font-size:17px;line-height:1.55}
+a{color:inherit}button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--teal);outline-offset:3px;border-radius:8px}
+.w{max-width:1120px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+h1,h2,h3,h4{font-family:var(--f-h);margin:0;letter-spacing:-.01em;text-wrap:balance}
+p{margin:0}.mono{font-family:var(--f-m)}.sr{position:absolute;left:-9999px}
+.ic{display:inline-grid;place-items:center;line-height:0;flex:none}.ic svg{width:1em;height:1em}
+
+.nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.nav .w{display:flex;align-items:center;gap:16px;height:64px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--f-h);font-weight:900;font-size:21px;text-decoration:none}
+.logo i{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--tp),var(--bp));display:grid;place-items:center;position:relative}
+.logo i::before,.logo i::after{content:"";position:absolute;background:var(--ti);border-radius:2px}.logo i::before{width:14px;height:4px}.logo i::after{width:4px;height:14px}
+.nav ul{display:flex;gap:2px;list-style:none;margin:0 0 0 auto;padding:0}
+.nav a.l{display:flex;align-items:center;min-height:44px;padding:0 12px;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px;color:var(--ink2)}
+.nav a.l:hover{background:var(--ts);color:var(--ti)}
+.nav a.cta{background:var(--teal);color:#fff;padding:0 18px}.nav a.cta:hover{background:var(--ti);color:#fff}
+@media (max-width:760px){.nav li.hide{display:none}}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:52px;padding:0 24px;border-radius:14px;font-weight:800;font-size:16px;text-decoration:none;border:0}
+.btn.p{background:var(--teal);color:#fff}.btn.p:hover{background:var(--ti)}
+.btn.s{background:#fff;box-shadow:inset 0 0 0 1.5px var(--line)}.btn.s:hover{box-shadow:inset 0 0 0 1.5px var(--teal)}
+
+section{padding:96px 0}
+@media (max-width:760px){section{padding:64px 0}}
+.sh{max-width:none;margin-bottom:30px}
+.sh h2{font-size:clamp(30px,4vw,44px);line-height:1.1;font-weight:900;text-wrap:wrap}
+.sh p{margin-top:12px;font-size:18px;color:var(--ink2);max-width:58ch}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border:1.5px solid var(--line);background:#fff;border-radius:30px;padding:0 16px;min-height:44px;font-weight:700;font-size:15px}
+.chips button:hover{border-color:var(--tp)}
+.chips button[aria-pressed=true]{background:var(--ts);border-color:var(--teal);color:var(--ti)}
+
+/* HERO */
+.hero{padding:108px 0 92px;text-align:center;background:radial-gradient(760px 380px at 50% 0%,#e2f0f5,transparent 70%),radial-gradient(520px 320px at 88% 100%,#fdeeea,transparent 70%),#f6f9fa}
+.hero h1{font-size:clamp(44px,7.4vw,80px);line-height:1.02;font-weight:900;color:#173040;max-width:15ch;margin:0 auto}
+.hero h1 span{color:var(--teal)}
+.hero .tag{margin-top:22px;font-family:var(--f-h);font-weight:900;font-size:clamp(20px,2.6vw,28px);color:var(--ink2)}
+.hero .tag em{font-style:normal;color:var(--peach)}
+.hero .sub{margin:14px auto 0;font-size:18px;color:var(--ink2);max-width:46ch}
+.hero .ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+.blocks{display:flex;justify-content:center;gap:34px;margin-top:52px;flex-wrap:wrap}
+.blocks a{display:flex;flex-direction:column;align-items:center;gap:8px;font-weight:800;font-size:14.5px;color:var(--ink2);text-decoration:none}
+.blocks .ic{width:60px;height:60px;border-radius:18px;font-size:26px;background:var(--cs);color:var(--c);transition:transform .2s}
+.blocks a:hover .ic{transform:translateY(-3px)}
+
+/* PROBLEM flip */
+.prob{background:var(--paper)}
+.flip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.flip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.flip{grid-template-columns:minmax(0,1fr)}}
+.fc{perspective:800px;height:200px}
+.fi{position:relative;width:100%;height:100%;transition:transform .7s;transform-style:preserve-3d}
+.flipped .fi{transform:rotateY(180deg)}
+.fc:nth-child(2) .fi{transition-delay:.08s}.fc:nth-child(3) .fi{transition-delay:.16s}.fc:nth-child(4) .fi{transition-delay:.24s}.fc:nth-child(5) .fi{transition-delay:.32s}
+.fa,.fb{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;padding:22px 14px 16px;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;text-align:center;gap:6px;font-size:15px;line-height:1.4}
+.fa b,.fb b{min-height:2.5em;display:flex;align-items:center;justify-content:center;line-height:1.2}
+.fa{background:var(--ps)}.fa .ic{font-size:24px;color:var(--peach);margin:0 auto}.fa b{color:var(--peach);font-family:var(--f-h);font-size:17px}
+.fb{background:var(--ts);transform:rotateY(180deg)}.fb .ic{font-size:24px;color:var(--teal);margin:0 auto}.fb b{color:var(--ti);font-family:var(--f-h);font-size:17px}
+.fbtn{margin-top:18px}
+
+/* HUB */
+.hgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:34px;align-items:center}
+@media (max-width:900px){.hgrid{grid-template-columns:minmax(0,1fr)}}
+.pbar{background:#fff;border-radius:18px;box-shadow:0 14px 40px -18px rgba(30,60,80,.35);padding:14px 16px;display:flex;align-items:center;gap:10px;font-size:17px;min-height:60px}
+.pbar .md{font-size:13px;font-weight:800;border-radius:20px;padding:4px 10px;background:var(--bs);color:var(--blue);white-space:nowrap;display:inline-flex;gap:5px;align-items:center}
+.cur{width:2px;height:20px;background:var(--teal);animation:blink 1s infinite}@keyframes blink{50%{opacity:0}}
+.hgrid .chips{margin-top:14px}
+.hans{margin-top:14px;background:#fff;border-radius:16px;padding:14px 16px;font-size:15.5px;min-height:84px}
+.hans b{display:block;font-size:13px;color:var(--teal);margin-bottom:3px}
+.hnote{font-size:13px;color:var(--mute);margin-top:10px}
+.hub{position:relative;height:360px}
+.hub svg{position:absolute;inset:0;width:100%;height:100%}
+.node{position:absolute;transform:translate(-50%,-50%);background:#fff;border-radius:16px;padding:10px 12px;font-size:14px;font-weight:800;text-align:center;box-shadow:0 8px 22px -12px rgba(0,0,0,.3);transition:all .4s;width:150px}
+.node small{display:block;font-weight:700;color:var(--mute);font-size:11.5px}
+.node .nnote{display:block;font-weight:700;font-size:12px;margin-top:3px;min-height:16px}
+.node.on{background:var(--c);color:#fff}.node.on small,.node.on .nnote{color:#fff}
+.node.miss{box-shadow:inset 0 0 0 2px var(--sp);color:var(--mute)}
+.core{background:var(--ink);color:#fff;border-radius:50%;width:110px;height:110px;display:grid;place-items:center;font-size:15px}
+.lines line{stroke:#c4d2da;stroke-width:2.5;stroke-dasharray:6 6;transition:stroke .4s}
+.lines line.on{stroke:var(--c);stroke-dasharray:none;stroke-width:3.5}
+@media (max-width:520px){.node{width:120px;font-size:12.5px;padding:8px}.core{width:86px;height:86px;font-size:13px}.hub{height:320px}}
+
+/* MULTIMODAL */
+.mmw{background:var(--paper)}
+.tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tabs button{border:0;border-radius:16px;min-height:52px;padding:0 18px;font-weight:900;font-family:var(--f-h);font-size:17px;background:#fff;box-shadow:inset 0 0 0 1.5px var(--line);display:inline-flex;gap:8px;align-items:center}
+.tabs button[aria-selected=true]{background:var(--ss);box-shadow:inset 0 0 0 2px var(--slate)}
+.pane{background:var(--bg);border-radius:20px;padding:22px;min-height:290px;position:relative;overflow:hidden}
+.mm{display:grid;grid-template-columns:190px minmax(0,1fr);gap:20px}
+@media (max-width:600px){.mm{grid-template-columns:minmax(0,1fr)}.mm img{height:180px!important}}
+.mm img{width:100%;border-radius:12px;height:240px;object-fit:cover;object-position:top}
+.rows{font-family:var(--f-m);font-size:13.5px;background:#fff;border-radius:12px;padding:10px}
+.rows div{display:grid;grid-template-columns:1.4fr .8fr 1fr;gap:6px;padding:5px 8px;border-radius:7px;opacity:.15;transition:all .35s}
+.rows div.in{opacity:1}.rows div.in.f{background:var(--ps)}
+.scan{position:absolute;left:22px;width:190px;height:4px;background:var(--teal);box-shadow:0 0 14px var(--teal);animation:scan 2.6s infinite}
+@keyframes scan{0%{top:22px}100%{top:262px}}
+@media (max-width:600px){.scan{display:none}}
+.pane .cap{font-size:14px;color:var(--mute);margin-top:10px}
+.wave{display:flex;gap:4px;align-items:center;height:90px}
+.wave i{flex:1;background:var(--bp);border-radius:3px;animation:wv 1s infinite ease-in-out}@keyframes wv{0%,100%{height:12%}50%{height:90%}}
+.tx{margin-top:16px;background:#fff;border-radius:12px;padding:14px;font-size:19px;min-height:56px}.tx b{color:var(--blue)}
+.typed{font-size:24px;font-family:var(--f-h);font-weight:800;margin-top:24px;background:#fff;border-radius:14px;padding:18px}
+.typed s{color:var(--peach);text-decoration-thickness:2px}.typed ins{text-decoration:none;background:var(--mint);color:var(--mi);border-radius:6px;padding:0 6px}
+
+/* MCP */
+.qline{font-size:clamp(20px,2.6vw,26px);font-family:var(--f-h);font-weight:800;min-height:40px;margin-top:20px}
+.qline span{display:inline-block;transition:all .6s;margin-right:7px}
+.qline span.drop{opacity:.25;text-decoration:line-through;text-decoration-color:var(--pp)}
+.qline span.keep{background:var(--pl);border-radius:6px;padding:0 6px}
+.wall{margin-top:22px;border-top:2.5px dashed var(--tp);position:relative;padding-top:22px;min-height:48px}
+.wall::before{content:"hospital boundary";position:absolute;top:-12px;left:0;background:var(--bg);padding-right:8px;font-size:12.5px;font-weight:800;color:var(--teal)}
+.pkt{display:inline-block;font-family:var(--f-m);font-weight:700;background:var(--peach);color:#fff;border-radius:20px;padding:5px 14px;font-size:14px;transition:opacity .5s}
+.srcrow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:18px}
+@media (max-width:600px){.srcrow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.srcrow div{background:#fff;border-radius:14px;padding:12px 6px;text-align:center;font-weight:800;font-size:14px;transition:all .4s}
+.srcrow div small{display:block;font-weight:600;font-size:12px;color:var(--mute)}
+.srcrow div.on{background:var(--peach);color:#fff}.srcrow div.on small{color:#fff}
+.steps{display:flex;gap:6px;margin-top:18px;align-items:center;flex-wrap:wrap}
+.steps button{border:1.5px solid var(--line);background:#fff;border-radius:22px;min-height:44px;padding:0 14px;font-size:14px;font-weight:800}
+.steps button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.steps .sp{flex:1}.steps .au{font-size:13px;color:var(--mute)}
+
+.mcpg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,460px);gap:40px;align-items:center;margin-bottom:34px}
+@media (max-width:900px){.mcpg{grid-template-columns:minmax(0,1fr)}}
+.hflow{background:#fff;border-radius:22px;padding:14px;box-shadow:0 24px 60px -24px rgba(20,60,80,.3),10px 10px 0 var(--pl)}
+.hflow svg{display:block;width:100%;height:auto}
+.hn{animation:hpulse 5s infinite}.hn.n1{animation-delay:0s}.hn.n2{animation-delay:1s}.hn.n3{animation-delay:2s}.hn.n4{animation-delay:3s}.hn.n5{animation-delay:3.8s}
+@keyframes hpulse{0%,14%,100%{opacity:1}6%{opacity:.55}}
+.kw4{display:flex;flex-direction:column;gap:10px}
+.kr{display:grid;grid-template-columns:minmax(0,1fr) 40px 190px;gap:14px;align-items:center;background:#fff;border-radius:18px;padding:16px 20px}
+@media (max-width:700px){.kr{grid-template-columns:minmax(0,1fr)}.ka{display:none}}
+.kq{font-family:var(--f-h);font-weight:800;font-size:clamp(17px,2vw,21px);line-height:1.5}
+.kq s{color:var(--sp);text-decoration-color:var(--pp);text-decoration-thickness:2px}
+.kq mark{background:var(--pl);color:var(--ink);border-radius:6px;padding:0 6px}
+.ka{color:var(--mute);font-size:22px;text-align:center}
+.ks{background:var(--peach);color:#fff;border-radius:14px;padding:10px 14px;text-align:center}
+.ks b{display:block;font-size:15.5px}.ks small{font-size:12.5px;opacity:.9}
+.js .kw4 .kr{opacity:0;transform:translateX(-14px);transition:opacity .5s,transform .5s}
+.js .kw4.go .kr{opacity:1;transform:none}.kw4.go .kr:nth-child(2){transition-delay:.15s}.kw4.go .kr:nth-child(3){transition-delay:.3s}.kw4.go .kr:nth-child(4){transition-delay:.45s}
+/* SETUP hubs */
+.setup{background:var(--paper)}
+/* hubs v2 */
+.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:900px){.pair{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:520px){.hnd{min-width:0;width:118px;font-size:12px;padding:7px 8px}.hcore{width:96px;height:96px;font-size:13px}.hb{height:280px}}
+.hubc{background:var(--bg);border-radius:22px;padding:18px 16px 12px}
+.hubc .hb{margin-top:14px}
+.hubc h4{margin:0;font-family:Nunito;font-weight:900;font-size:18px;display:flex;align-items:center;gap:8px}
+.hubc h4 .ic{font-size:20px;color:var(--c)}
+.hubc p{margin:4px 0 0;font-size:14px;color:var(--ink2)}
+.hb{position:relative;height:300px}
+.hb>svg{position:absolute;inset:0;width:100%;height:100%}
+.hcore{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:124px;height:124px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;text-align:center;font-family:Nunito;font-weight:900;font-size:15px;line-height:1.2;box-shadow:0 0 0 10px var(--cs)}
+.hnd{position:absolute;transform:translate(-50%,-50%);background:#fff;border-radius:14px;padding:9px 12px;font-size:13.5px;font-weight:800;text-align:center;box-shadow:0 8px 22px -12px rgba(0,0,0,.3);min-width:132px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.hnd .ic{font-size:18px;color:var(--c)}
+.hnd small{font-weight:600;color:var(--mute);font-size:11.5px}
+.hnd.add{border:2px dashed var(--c2);background:var(--cs);animation:float 3s ease-in-out infinite}
+@keyframes float{50%{transform:translate(-50%,-56%)}}
+.spk{stroke:var(--c2);stroke-width:2.5;stroke-dasharray:6 7;animation:flow 1.4s linear infinite}
+.spk.in{animation-direction:reverse}
+@keyframes flow{to{stroke-dashoffset:-26}}
+.foot{display:flex;justify-content:center;gap:10px;margin-top:6px;font-size:12.5px;color:var(--mute);font-weight:700}
+@media (prefers-reduced-motion:reduce){.spk,.hnd.add{animation:none}.hubc .foot{display:none}}
+
+@media (max-width:480px){.flip{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.flip .fc:last-child{grid-column:1/-1}.fc{height:176px}.fa,.fb{padding:16px 10px 12px;font-size:13.5px}.fa b,.fb b{font-size:15px}}
+@media (max-width:520px){.hb{height:330px}.hnd{width:112px;font-size:11.5px;padding:6px 6px}.hnd small{font-size:10.5px}.hcore{width:88px;height:88px;font-size:12.5px;box-shadow:0 0 0 6px var(--cs)}}
+@media (max-width:520px){.hb{height:auto;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding-top:116px;position:relative}.hb>svg{display:none}.hcore{top:52px}.hnd{position:static;transform:none;width:calc(50% - 4px);animation:none}.hnd.add{animation:none}}
+/* DEMO (real app) */
+.demo{background:linear-gradient(180deg,#e2f0f5,#e8eff9)}
+.app{display:grid;grid-template-columns:250px minmax(0,1fr);background:#fff;border-radius:22px;overflow:hidden;min-height:560px;font-size:15px;box-shadow:0 30px 70px -35px rgba(30,60,80,.4)}
+@media (max-width:820px){.app{grid-template-columns:minmax(0,1fr)}.sb{border-right:0!important;border-bottom:1px solid var(--line)}}
+.sb{background:#f6f8fa;border-right:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:8px}
+.sb .brand{font-family:var(--f-h);font-weight:900;font-size:18px}
+.sb label{font-size:12.5px;font-weight:800;color:var(--mute)}
+.sb select{font:inherit;font-size:15px;border:1.5px solid var(--line);border-radius:10px;padding:0 10px;min-height:44px;background:#fff}
+.sb .hint{font-size:12px;color:var(--mute)}
+.sb .sec{font-weight:800;font-size:13.5px;margin-top:8px}
+.sb .ch{display:block;width:100%;text-align:left;border:0;background:transparent;font-size:13.5px;padding:0 10px;min-height:40px;border-radius:9px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb .ch:hover{background:#fff}.sb .ch[aria-current=true]{background:#fff;box-shadow:inset 0 0 0 1.5px var(--tp);color:var(--ink)}
+.sb .ch.new{border:1px solid var(--line);background:#fff}
+.sb .drv{font-size:12.5px;background:#fff;border-radius:10px;padding:10px;border:1px solid var(--line);color:var(--ink2)}
+.sb .drv button{margin-top:8px;width:100%;border:0;background:var(--blue);color:#fff;border-radius:9px;min-height:40px;font-weight:800;font-size:13px}
+.sb .data{font-size:12.5px;color:var(--mute)}
+@media (max-width:820px){.sb .sec.hm,.sb .drv,.sb .data,.sb .hint{display:none}}
+.main{display:flex;flex-direction:column;min-width:0}
+.conv{flex:1;padding:18px;display:flex;flex-direction:column;gap:12px;overflow:auto;max-height:420px;min-height:300px}
+.empty{margin:auto;text-align:center;color:var(--mute)}.empty b{display:block;font-family:var(--f-h);font-size:24px;color:var(--ink)}
+.u{align-self:flex-end;background:var(--ink);color:#fff;border-radius:16px 16px 4px 16px;padding:10px 14px;max-width:82%}
+.u .att{display:inline-block;background:rgba(255,255,255,.16);border-radius:8px;padding:3px 8px;font-size:12.5px;margin-bottom:6px}
+.a{background:var(--bg);border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:88%;line-height:1.5}
+.status{font-size:13px;color:var(--mute);display:flex;gap:8px;align-items:center}
+.status i{width:11px;height:11px;border-radius:50%;border:2px solid var(--teal);border-top-color:transparent;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.note{align-self:center;font-size:13px;color:var(--ink2);background:var(--bg);border-radius:20px;padding:5px 12px;display:inline-flex;gap:6px;align-items:center}
+.srcs{margin-top:8px;font-size:13px;color:var(--ink2);border-top:1px solid var(--line);padding-top:6px}.srcs b{color:var(--ink)}
+.dsug{display:flex;gap:6px;flex-wrap:wrap;padding:0 18px}
+.dsug button{border:1.5px solid var(--line);background:#fff;border-radius:22px;padding:0 13px;min-height:44px;font-size:13.5px;font-weight:700}
+.dsug button:hover{border-color:var(--teal)}
+.bar{margin:12px 18px 18px;border:1.5px solid var(--line);border-radius:18px;padding:6px 10px;position:relative}
+.bar input{width:100%;border:0;font:inherit;font-size:16px;padding:8px 6px;outline:none}
+.bar .ctl{display:flex;align-items:center;gap:6px}
+.bar .ctl button{border:0;background:transparent;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:19px}
+.bar .ctl button:hover{background:var(--bg)}
+.bar .ctl .send{margin-left:auto;background:var(--teal);color:#fff}.bar .ctl .send:hover{background:var(--ti)}
+.menu{position:absolute;bottom:66px;left:8px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 28px -12px rgba(0,0,0,.35);padding:6px;display:none;z-index:3;min-width:190px}
+.menu.open{display:block}.menu button{display:flex;gap:10px;align-items:center;border:0;background:#fff;padding:0 12px;min-height:44px;border-radius:9px;width:100%;font-weight:700;font-size:14px}.menu button:hover{background:var(--bg)}
+.dnote{margin-top:14px;font-size:14px;color:var(--ink2);max-width:80ch}
+
+/* RESULTS carousel */
+.car{background:#fff;border-radius:26px;padding:34px;min-height:340px;position:relative}
+@media (max-width:600px){.car{padding:22px}}
+.slide{display:none;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:30px;align-items:center}
+@media (max-width:820px){.slide{grid-template-columns:minmax(0,1fr)}}
+.slide.on{display:grid;animation:fade .5s}@keyframes fade{from{opacity:0;transform:translateX(16px)}}
+.slide h3{font-size:clamp(24px,3vw,32px);font-weight:900;line-height:1.15}
+.slide .big{font-family:var(--f-h);font-weight:900;font-size:clamp(54px,8vw,80px);line-height:1;color:var(--teal);margin-top:10px}
+.slide p{color:var(--ink2);font-size:16px;margin-top:10px;max-width:40ch}
+.cnav{display:flex;align-items:center;gap:12px;margin-top:20px;justify-content:center}
+.cnav .arw{width:48px;height:48px;border-radius:50%;border:1.5px solid var(--line);background:#fff;font-size:22px;display:grid;place-items:center}
+.cnav .arw:hover{border-color:var(--teal)}
+.dots{display:flex;gap:4px}.dots button{width:44px;height:44px;border:0;background:transparent;padding:0;display:grid;place-items:center}
+.dots button::before{content:"";width:28px;height:8px;border-radius:4px;background:var(--sp)}.dots button.on::before{background:var(--teal)}
+.dn{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.dn div{text-align:center;font-size:13.5px;font-weight:800}
+.bars2{display:grid;grid-template-columns:130px minmax(0,1fr) 56px;gap:10px 12px;align-items:center;font-size:14.5px;font-weight:700}
+.bars2 .tr{height:22px;background:var(--bg);border-radius:11px;overflow:hidden}.bars2 .tr i{display:block;height:100%;border-radius:11px}
+.tm{display:grid;grid-template-columns:1.6fr 1fr;gap:6px;height:240px;font-size:13.5px;font-weight:800}
+.tm>div,.tm>div>div{border-radius:10px;padding:10px}
+.tm small{display:block;font-weight:600;font-size:12px;color:#3b4b55}
+.scope{margin-top:20px;border-radius:18px;padding:16px 20px;background:var(--ps);color:var(--ink2);font-size:15.5px}.scope b{color:var(--ink)}
+
+footer{padding:48px 0 calc(48px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid var(--line);font-size:15px;color:var(--ink2)}
+footer .w{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center}
+footer b{font-family:var(--f-h);font-size:19px;color:var(--ink)}
+.rv{transition:opacity .7s,transform .7s}.js .rv:not(.in){opacity:0;transform:translateY(16px)}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add("js")</script>
+<nav class="nav" aria-label="Main"><div class="w">
+  <a class="logo" href="#top"><i></i>MediAssist</a>
+  <ul>
+    <li class="hide"><a class="l" href="#sources">How it works</a></li>
+    <li class="hide"><a class="l" href="#results">Results</a></li>
+    <li><a class="l cta" href="#demo">Try it</a></li>
+  </ul>
+</div></nav>
+
+<header class="hero" id="top"><div class="w">
+  <h1>Patient records. Trusted sources. <span>One answer.</span></h1>
+  <p class="tag">Type it, say it, snap it. <em>Get the answer.</em></p>
+  <p class="sub">MediAssist is a local AI assistant for clinical teams that runs on the hospital's own hardware.</p>
+  <div class="ctas"><a class="btn p" href="#demo">Try the demo</a><a class="btn s" href="#sources">How it works</a></div>
+  <div class="blocks">
+    <a href="#inputs" style="--c:var(--slate);--cs:var(--ss)"><span class="ic"><i data-lucide="camera"></i></span>Multimodal input</a>
+    <a href="#sources" style="--c:var(--teal);--cs:var(--ts)"><span class="ic"><i data-lucide="database"></i></span>RAG</a>
+    <a href="#mcp" style="--c:var(--peach);--cs:var(--ps)"><span class="ic"><i data-lucide="network"></i></span>MCP</a>
+  </div>
+</div></header>
+
+<main>
+<section class="prob" id="problem"><div class="w">
+  <div class="sh rv"><h2>One question, many places to look.</h2><p>Answering a question about a patient can mean checking lab reports, drug labels, patient history and guidelines. Today's AI tools bring their own problems:</p></div>
+  <div class="flip rv" id="fl"></div>
+  <button class="btn p fbtn rv" id="flb" aria-pressed="false">See how MediAssist helps</button>
+</div></section>
+
+<section id="sources"><div class="w">
+  <div class="sh rv"><h2>Where answers come from.</h2><p>MediAssist searches the patient's reports and a medical knowledge base on the device first. It reaches public sources only when nothing local answers the question.</p></div>
+  <div class="hgrid rv">
+    <div>
+      <div class="pbar" aria-live="polite"><span class="md" id="am"></span><span id="aq"></span><span class="cur" aria-hidden="true"></span></div>
+      <div class="chips" id="ach" role="group" aria-label="Example questions"></div>
+      <div class="hans" id="aa" aria-live="polite"></div>
+      <p class="hnote">Grey ring: searched, no match. Filled: used for the answer.</p>
+    </div>
+    <div class="hub" id="hub" role="img" aria-label="MediAssist connected to patient's reports, knowledge base, photo or voice input, and public sources">
+      <svg viewBox="0 0 500 360" preserveAspectRatio="none" aria-hidden="true"><g class="lines">
+        <line data-k="pat" x1="250" y1="180" x2="95" y2="60" style="--c:#1a7189"/><line data-k="kb" x1="250" y1="180" x2="405" y2="60" style="--c:#355f9e"/><line data-k="img" x1="250" y1="180" x2="95" y2="300" style="--c:#2f4a5e"/><line data-k="mcp" x1="250" y1="180" x2="405" y2="300" style="--c:#b5492f"/></g></svg>
+      <div class="node core" style="left:50%;top:50%">MediAssist</div>
+      <div class="node" data-k="pat" style="left:19%;top:16%;--c:var(--teal)">Patient's reports<small>RAG</small><span class="nnote"></span></div>
+      <div class="node" data-k="kb" style="left:81%;top:16%;--c:var(--blue)">Knowledge base<small>RAG</small><span class="nnote"></span></div>
+      <div class="node" data-k="img" style="left:19%;top:84%;--c:var(--slate)">Photo or voice<small>multimodal</small><span class="nnote"></span></div>
+      <div class="node" data-k="mcp" style="left:81%;top:84%;--c:var(--peach)">Public sources<small>MCP</small><span class="nnote"></span></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="mmw" id="inputs"><div class="w">
+  <div class="sh rv"><h2>Ask the way that suits the moment.</h2><p>Questions can be typed, spoken, or asked about a photo or PDF of a report or medicine label. Everything is read on the device.</p></div>
+  <div class="tabs rv" role="tablist" aria-label="Input types">
+    <button role="tab" data-t="type" aria-selected="false" aria-controls="cp"><span class="ic"><i data-lucide="keyboard"></i></span>Type it</button>
+    <button role="tab" data-t="say" aria-selected="false" aria-controls="cp"><span class="ic"><i data-lucide="mic"></i></span>Say it</button>
+    <button role="tab" data-t="snap" aria-selected="true" aria-controls="cp"><span class="ic"><i data-lucide="camera"></i></span>Snap it</button>
+  </div>
+  <div class="pane rv" id="cp" role="tabpanel"></div>
+</div></section>
+
+<section id="mcp"><div class="w">
+  <div class="sh rv" style="margin-bottom:18px"><h2>Only keywords leave the hospital.</h2></div>
+  <div class="mcpg"><div class="sh rv" style="margin:0"><p style="margin-top:0">Patient records never leave. When a public source is needed, MediAssist strips the question down to medical keywords and lets a local model pick one of four sources through the Model Context Protocol.</p><p style="margin-top:12px;font-size:15px;color:var(--mute)">Below: real questions and exactly what MediAssist sent. Tap one.</p></div>
+  <div class="rv"><div class="hflow" role="img" aria-label="Animation: a nurse's question moves through MediAssist inside the hospital; only keywords go out to public sources">
+      <svg viewBox="0 0 540 420">
+        <defs>
+          <marker id="ha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#5c6c76"/></marker>
+          <marker id="hp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#eb9a82"/></marker>
+          <path id="pdown" d="M56 68 V372"/>
+          <path id="pout" d="M300 70 C350 70 360 150 400 160"/>
+        </defs>
+        <rect x="14" y="14" width="356" height="392" rx="26" fill="#ffffffcc" stroke="#13728b" stroke-width="2.4" stroke-dasharray="10 7"/>
+        <rect x="36" y="2" width="170" height="26" rx="13" fill="#13728b"/>
+        <text x="121" y="20" text-anchor="middle" font-family="Nunito" font-weight="900" font-size="13" fill="#fff">Inside the hospital</text>
+        <g font-family="Nunito Sans" text-anchor="middle">
+          <g class="hn n1"><rect x="80" y="44" width="220" height="48" rx="24" fill="#fff" stroke="#1b2a36" stroke-width="2"/><text x="190" y="66" font-weight="800" font-size="15" fill="#1b2a36">Nurse asks</text><text x="190" y="83" font-size="12" fill="#5c6c76">"Is the WBC count normal?"</text></g>
+          <g class="hn n2"><rect x="80" y="122" width="220" height="48" rx="12" fill="#e3f2f6" stroke="#9fd3e0" stroke-width="2"/><text x="190" y="144" font-weight="800" font-size="15" fill="#1b2a36">Find it in the report</text><text x="190" y="161" font-size="12" fill="#5c6c76">this patient's records only</text></g>
+          <g class="hn n3"><rect x="80" y="200" width="220" height="48" rx="12" fill="#e9eef2" stroke="#aab8c6" stroke-width="2"/><text x="190" y="222" font-weight="800" font-size="15" fill="#1b2a36">Check in code</text><text x="190" y="239" font-size="12" fill="#ad472d" font-weight="700">11800 &gt; 10000 · above range</text></g>
+          <g class="hn n4"><rect x="80" y="278" width="220" height="48" rx="12" fill="#ebf1fb" stroke="#a9c4ea" stroke-width="2"/><text x="190" y="300" font-weight="800" font-size="15" fill="#1b2a36">Qwen 2.5 7B answers</text><text x="190" y="317" font-size="12" fill="#5c6c76">repeats the code's verdict</text></g>
+          <g class="hn n5"><rect x="80" y="352" width="220" height="40" rx="20" fill="#fff" stroke="#1b2a36" stroke-width="2"/><text x="190" y="377" font-weight="800" font-size="15" fill="#1b2a36">Nurse reviews</text></g>
+        </g>
+        <line x1="56" y1="68" x2="56" y2="372" stroke="#c4e5ee" stroke-width="4" stroke-linecap="round"/>
+        <g stroke="#5c6c76" stroke-width="2" marker-end="url(#ha)"><path d="M190 92V120"/><path d="M190 170V198"/><path d="M190 248V276"/><path d="M190 326V350"/></g>
+        <rect x="402" y="128" width="124" height="70" rx="14" fill="#fdefea" stroke="#eb9a82" stroke-width="2"/>
+        <text x="464" y="158" text-anchor="middle" font-family="Nunito" font-weight="900" font-size="14" fill="#ad472d">Public sources</text>
+        <text x="464" y="177" text-anchor="middle" font-family="Nunito Sans" font-size="11.5" fill="#5c6c76">only when needed</text>
+        <path d="M300 70 C350 70 360 150 400 160" fill="none" stroke="#eb9a82" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#hp)"/>
+        <g class="mv"><circle r="8" fill="#13728b"/><circle r="3.5" fill="#fff"/><animateMotion dur="5s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.8;1" calcMode="linear"><mpath href="#pdown"/></animateMotion></g>
+        <g class="mv"><rect x="-38" y="-12" width="76" height="24" rx="12" fill="#fff" stroke="#eb9a82" stroke-width="1.6"/><text text-anchor="middle" y="4" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#ad472d">keywords</text><animateMotion dur="5s" repeatCount="indefinite" keyPoints="0;0;0.85;0.85" keyTimes="0;0.15;0.55;1" calcMode="linear"><mpath href="#pout"/></animateMotion><animate attributeName="opacity" dur="5s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.15;0.5;0.6;1"/></g>
+        <g stroke="#ad472d" stroke-width="2.2" stroke-linecap="round"><path d="M374 279l12 12M386 279l-12 12"/></g>
+        <g transform="translate(402 300)"><rect x="-10" y="-46" width="134" height="56" rx="12" fill="#fff" stroke="#9fd3e0" stroke-width="2"/><text x="57" y="-24" text-anchor="middle" font-family="Nunito" font-weight="900" font-size="13" fill="#0f4f61">Patient data</text><text x="57" y="-6" text-anchor="middle" font-family="Nunito Sans" font-size="12" fill="#5c6c76">never leaves</text></g>
+      </svg></div></div></div>
+  <div class="rv">
+    <div class="chips" id="eq" role="group" aria-label="Example questions"></div>
+    <div class="qline" id="e1" aria-live="polite"></div>
+    <div class="wall"><span class="pkt" id="ek" style="opacity:0"></span></div>
+    <div class="srcrow" id="es"><div data-s="dailymed">DailyMed<small>drug labels</small></div><div data-s="clinical_trials">ClinicalTrials.gov<small>trials</small></div><div data-s="medlineplus">MedlinePlus<small>health topics</small></div><div data-s="pubmed">PubMed<small>research</small></div></div>
+  </div>
+</div></section>
+
+<section class="setup" id="setup"><div class="w">
+  <div class="sh rv"><h2>Set up for each hospital.</h2><p>Add your own documents to the knowledge base and your own tools to the MCP server. The assistant stays the same.</p></div>
+  <div class="rv"><div class="pair">
+  <div class="hubc" style="--c:var(--blue);--cs:var(--bs);--c2:var(--bp)"><h4><span class="ic"><i data-lucide="book-open"></i></span>Knowledge base (RAG)</h4><p>Documents stored and searched on the device.</p>
+   <div class="hb"><svg viewBox="0 0 500 300" preserveAspectRatio="none"><g><line class="spk in" x1="250" y1="150" x2="95" y2="55"/><line class="spk in" x1="250" y1="150" x2="405" y2="55"/><line class="spk in" x1="250" y1="150" x2="95" y2="245"/><line class="spk in" x1="250" y1="150" x2="405" y2="245"/><line class="spk in" x1="250" y1="150" x2="250" y2="30"/></g></svg>
+    <div class="hcore">Knowledge<br>base</div>
+    <div class="hnd" style="left:50%;top:10%"><span class="ic"><i data-lucide="file-text"></i></span>Clinical guidelines</div>
+    <div class="hnd" style="left:19%;top:18%"><span class="ic"><i data-lucide="clipboard-list"></i></span>Ward protocols</div>
+    <div class="hnd" style="left:81%;top:18%"><span class="ic"><i data-lucide="pill"></i></span>Drug formulary</div>
+    <div class="hnd" style="left:19%;top:82%"><span class="ic"><i data-lucide="route"></i></span>Care pathways</div>
+    <div class="hnd add" style="left:81%;top:82%"><span class="ic"><i data-lucide="plus"></i></span>Your documents<small>any PDF</small></div></div>
+   <div class="foot">Dashes flow in: documents are added to the device.</div></div>
+  <div class="hubc" style="--c:var(--ink);--cs:var(--ss);--c2:var(--pp)"><h4><span class="ic" style="color:var(--peach)"><i data-lucide="network"></i></span>Public sources and tools (MCP)</h4><p>Reached only with keywords, when needed.</p>
+   <div class="hb"><svg viewBox="0 0 500 300" preserveAspectRatio="none"><g><line class="spk" x1="250" y1="150" x2="95" y2="55"/><line class="spk" x1="250" y1="150" x2="405" y2="55"/><line class="spk" x1="250" y1="150" x2="95" y2="245"/><line class="spk" x1="250" y1="150" x2="405" y2="245"/><line class="spk" x1="250" y1="150" x2="250" y2="30"/><line class="spk" x1="250" y1="150" x2="250" y2="275"/></g></svg>
+    <div class="hcore">MCP<br>server</div>
+    <div class="hnd" style="left:50%;top:10%"><span class="ic" style="color:var(--peach)"><i data-lucide="flask-conical"></i></span>PubMed<small>research</small></div>
+    <div class="hnd" style="left:19%;top:18%"><span class="ic" style="color:var(--peach)"><i data-lucide="pill"></i></span>DailyMed<small>drug labels</small></div>
+    <div class="hnd" style="left:81%;top:18%"><span class="ic" style="color:var(--peach)"><i data-lucide="heart-pulse"></i></span>MedlinePlus<small>health topics</small></div>
+    <div class="hnd" style="left:19%;top:82%"><span class="ic" style="color:var(--peach)"><i data-lucide="test-tubes"></i></span>ClinicalTrials.gov<small>trials</small></div>
+    <div class="hnd" style="left:81%;top:82%"><span class="ic" style="color:var(--peach)"><i data-lucide="folder-lock"></i></span>Record tool<small>NEHR stand-in</small></div>
+    <div class="hnd add" style="left:50%;top:92%;--c2:var(--pp);--cs:var(--ps)"><span class="ic" style="color:var(--peach)"><i data-lucide="plus"></i></span>Your tool</div></div>
+   <div class="foot">Dashes flow out: only keywords go to these sources.</div></div>
+ </div>
+</div>
+</div></section>
+
+<section class="demo" id="demo"><div class="w">
+  <div class="sh rv"><h2>Try MediAssist.</h2><p>This is the app's own layout. Switch patients, open a saved chat, attach a photo or PDF with +, use the mic, or tap a suggestion.</p></div>
+  <div class="app rv">
+    <aside class="sb">
+      <span class="brand">MediAssist</span>
+      <label for="dp">Profile</label>
+      <select id="dp"><option value="R1">Mr. Daniel Tan</option><option value="R4">Mdm. Lim Siew Hong</option><option value="R2">Ms. Priya Nair</option></select>
+      <span class="hint">Each profile keeps its own chats and reports.</span>
+      <span class="sec">Chats</span>
+      <div id="dchats"></div>
+      <span class="sec hm">Google Drive</span>
+      <div class="drv">Read-only record folder, a stand-in for NEHR access.<button id="ddrv" aria-pressed="false">Connect Google Drive</button></div>
+      <span class="sec hm">Data</span><span class="data" id="ddata"></span>
+    </aside>
+    <div class="main">
+      <div class="conv" id="dc" aria-live="polite"></div>
+      <div class="dsug" id="ds"></div>
+      <div class="bar">
+        <div class="menu" id="dm" role="menu"><button role="menuitem" data-m="camera"><span class="ic"><i data-lucide="camera"></i></span>Camera</button><button role="menuitem" data-m="image"><span class="ic"><i data-lucide="image"></i></span>Upload image</button><button role="menuitem" data-m="pdf"><span class="ic"><i data-lucide="file-text"></i></span>Upload PDF</button></div>
+        <label for="di" class="sr">Your question</label><input id="di" placeholder="Type your question…" autocomplete="off">
+        <div class="ctl"><button id="dplus" aria-label="Attach a photo or PDF" aria-expanded="false"><span class="ic"><i data-lucide="plus"></i></span></button><button id="dmic" aria-label="Speak your question"><span class="ic"><i data-lucide="mic"></i></span></button><button class="send" id="dsend" aria-label="Send"><span class="ic"><i data-lucide="arrow-up"></i></span></button></div>
+      </div>
+    </div>
+  </div>
+  <p class="dnote">Patients and reports are synthetic. The demo replays answers recorded in testing; the real app runs its models on the device.</p>
+</div></section>
+
+<section id="results"><div class="w">
+  <div class="sh rv"><h2>What testing showed.</h2><p>Tested on 5 synthetic lab reports in 4 formats, 28 source questions and 68 scenarios.</p></div>
+  <div class="car rv" id="car" aria-roledescription="carousel" aria-live="polite"></div>
+  <div class="cnav"><button class="arw" id="cprev" aria-label="Previous result">‹</button><div class="dots" id="cdots"></div><button class="arw" id="cnext" aria-label="Next result">›</button></div>
+  <p class="scope rv"><b>Scope.</b> A research prototype tested on synthetic reports. It does not diagnose or give treatment advice, and it is not a medical device. A study with clinical staff is the next step.</p>
+</div></section>
+</main>
+
+<footer><div class="w">
+  <div><b>MediAssist</b><p style="margin-top:6px">Nivedha Lakshmi Magesh and Chee Wei Tan · Nanyang Technological University, Singapore</p><p style="margin-top:4px">c220080@e.ntu.edu.sg · cheewei.tan@ntu.edu.sg</p></div>
+  <a class="btn s" href="files/MediAssist-poster.pdf" target="_blank" rel="noopener">View the iAIM 2026 poster (PDF)</a>
+</div></footer>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const RM=matchMedia("(prefers-reduced-motion: reduce)").matches,W=ms=>sleep(RM?0:ms);
+const icons=()=>{try{lucide.createIcons();}catch(e){}};
+
+/* ---------- PROBLEM ---------- */
+$("#fl").innerHTML=[["lock","Privacy","Cloud tools may store patient data off-site.","server","Runs in-house","All models run on the hospital's own hardware."],
+ ["alert-triangle","Reliability","Plausible but wrong answers.","calculator","Values checked","Lab values are compared with their ranges in code."],
+ ["hourglass","Outdated knowledge","Models go stale; retraining is costly.","globe","Current sources","Looks up DailyMed, PubMed and more when needed."],
+ ["database","RAG","Adds evidence, but models can still hallucinate.","folder-heart","Grounded answers","Answers from the patient's own records, with sources."],
+ ["network","Existing MCP servers","Fixed tools that cannot be customised.","plug","Its own MCP server","Four public sources plus a record tool."]]
+ .map(([i1,a,b,i2,c,d])=>'<div class="fc"><div class="fi"><div class="fa"><span class="ic"><i data-lucide="'+i1+'"></i></span><b>'+a+'</b>'+b+'</div><div class="fb" aria-hidden="true"><span class="ic"><i data-lucide="'+i2+'"></i></span><b>'+c+'</b>'+d+'</div></div></div>').join("");
+$("#flb").onclick=()=>{const f=$("#fl").classList.toggle("flipped");$("#flb").textContent=f?"Show the problems again":"See how MediAssist helps";$("#flb").setAttribute("aria-pressed",f);
+  document.querySelectorAll("#fl .fa").forEach(x=>x.setAttribute("aria-hidden",f));document.querySelectorAll("#fl .fb").forEach(x=>x.setAttribute("aria-hidden",!f));};
+
+/* ---------- SOURCES HUB (routing follows app.py) ---------- */
+const AX=[
+ {c:"Summarise a report",m:["keyboard","Typed"],q:"Summarise Mdm. Lim's report",use:["pat"],miss:[],note:{pat:"whole report"},a:["From the patient's reports","Total Bilirubin and SGPT are above their reference ranges. Albumin is below. Other values are within range."]},
+ {c:"Prediabetes",m:["keyboard","Typed"],q:"How is prediabetes diagnosed?",use:["kb"],miss:["pat"],note:{kb:"prediabetes guideline"},a:["From the knowledge base","Matched in the guideline stored on the device, so no public search runs."]},
+ {c:"Anaemia",m:["mic","Voice"],q:"What is anaemia?",use:["img","mcp"],miss:["pat","kb"],note:{img:"speech to text",mcp:"MedlinePlus"},a:["From a public source, via MCP","A decrease in red blood cells or haemoglobin, which reduces the blood's oxygen-carrying capacity."]},
+ {c:"Metformin dose",m:["keyboard","Typed"],q:"Usual starting dose of metformin?",use:["mcp"],miss:["pat","kb"],note:{mcp:"DailyMed"},a:["From DailyMed, via MCP","500 mg twice a day or 850 mg once a day, given with meals."]},
+ {c:"Medicine photo",m:["camera","Photo"],q:"What is this medicine for?",use:["img","mcp"],miss:["pat","kb"],note:{img:"label read by MedGemma",mcp:"label words searched"},a:["From the photo, read by MedGemma 4B","Glucosamine and curcumin: glucosamine supports joint health; curcumin has anti-inflammatory properties."]}];
+$("#ach").innerHTML=AX.map((x,i)=>'<button data-i="'+i+'" aria-pressed="false">'+x.c+'</button>').join("");
+let ai=0,aAuto=true,tok=0,hubVis=false;
+async function playA(i){const my=++tok,x=AX[i];ai=i;
+ document.querySelectorAll("#ach button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.i===i));
+ document.querySelectorAll("#hub .node[data-k]").forEach(n=>{n.classList.remove("on","miss");n.querySelector(".nnote").textContent="";});
+ document.querySelectorAll("#hub line").forEach(l=>l.classList.remove("on"));
+ $("#am").innerHTML='<span class="ic"><i data-lucide="'+x.m[0]+'"></i></span>'+x.m[1];icons();$("#aq").textContent="";$("#aa").innerHTML="";
+ if(RM)$("#aq").textContent=x.q;else for(const ch of x.q){if(my!==tok)return;$("#aq").textContent+=ch;await sleep(12);}
+ for(const k of x.miss){await W(180);if(my!==tok)return;const n=document.querySelector('#hub .node[data-k="'+k+'"]');n.classList.add("miss");n.querySelector(".nnote").textContent="searched, no match";}
+ for(const k of x.use){await W(200);if(my!==tok)return;const n=document.querySelector('#hub .node[data-k="'+k+'"]');n.classList.add("on");n.querySelector(".nnote").textContent=(x.note&&x.note[k])||"used";document.querySelector('#hub line[data-k="'+k+'"]').classList.add("on");}
+ await W(120);if(my!==tok)return;$("#aa").innerHTML="<b>"+x.a[0]+"</b>"+x.a[1];}
+document.querySelectorAll("#ach button").forEach(b=>b.onclick=()=>{aAuto=false;playA(+b.dataset.i);});
+playA(0);
+(async()=>{while(true){await sleep(7500);if(aAuto&&hubVis&&!document.hidden&&!RM)playA((ai+1)%AX.length);}})();
+
+/* ---------- MULTIMODAL TABS ---------- */
+let ctab="snap",ctok=0;
+async function drawC(){const my=++ctok,p=$("#cp");document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===ctab));
+ if(ctab==="snap"){const R=[["Haemoglobin","14.6","13.0-17.0",0],["Total WBC","11800","4000-10000",1],["Neutrophils","72","40-75",0],["Lymphocytes","18","20-40",1],["Eosinophils","3","1-6",0],["Platelets","245000","150k-410k",0],["RBC","4.9","4.5-5.9",0]];
+  p.innerHTML='<div class="mm"><img src="reports/R1_cbc_male-photo.jpg" alt="Phone photo of a blood count report"><div><div class="rows" id="cr">'+R.map(r=>'<div class="'+(r[3]?"f":"")+'"><span>'+r[0]+'</span><span>'+r[1]+'</span><span>'+r[2]+'</span></div>').join("")+'</div><p class="cap">Photos and scans are read by MedGemma 4B on the device, with Tesseract OCR as a fallback. Values outside their range are flagged.</p></div></div><div class="scan" aria-hidden="true"></div>';
+  const d=[...p.querySelectorAll("#cr div")];if(RM){d.forEach(x=>x.classList.add("in"));return;}
+  while(my===ctok){d.forEach(x=>x.classList.remove("in"));for(const x of d){await sleep(360);if(my!==ctok)return;x.classList.add("in");}await sleep(2000);}}
+ if(ctab==="say"){p.innerHTML='<div class="wave" aria-hidden="true">'+Array.from({length:48},(_,i)=>'<i style="animation-delay:'+(i*.05)+'s"></i>').join("")+'</div><div class="tx" id="ct"></div><p class="cap">Faster Whisper turns speech into text on the device. The question is shown for checking before it is sent.</p>';
+  const t="Is the haemoglobin within range?".split(" ");if(RM){$("#ct").innerHTML=t.map(w=>"<b>"+w+"</b>").join(" ");return;}
+  while(my===ctok){$("#ct").innerHTML="";for(const w of t){await sleep(400);if(my!==ctok)return;$("#ct").innerHTML+="<b>"+w+"</b> ";}await sleep(2400);}}
+ if(ctab==="type"){p.innerHTML='<p style="color:var(--ink2)">Spelling is checked against 291,075 medical (MeSH) terms on the device, so a typo still finds the right result.</p><div class="typed" id="cty"></div>';
+  if(RM){$("#cty").innerHTML="is the <s>haemoglobn</s> <ins>haemoglobin</ins> normal?";return;}
+  while(my===ctok){$("#cty").innerHTML="is the haemoglobn normal?";await sleep(1500);if(my!==ctok)return;$("#cty").innerHTML="is the <s>haemoglobn</s> <ins>haemoglobin</ins> normal?";await sleep(2800);}}
+ icons();}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{ctab=b.dataset.t;drawC();});
+$(".tabs").addEventListener("keydown",e=>{const t=["type","say","snap"];let i=t.indexOf(ctab);if(e.key==="ArrowRight")i=(i+1)%3;else if(e.key==="ArrowLeft")i=(i+2)%3;else return;ctab=t[i];drawC();document.querySelector('.tabs button[data-t="'+ctab+'"]').focus();});
+drawC();
+
+/* ---------- MCP ---------- */
+const EQ=[["atorvastatin and grapefruit","atorvastatin grapefruit","dailymed"],["what are the side effects of metformin","metformin","dailymed"],["are researchers testing anything for parkinson's","researchers parkinson","clinical_trials"],["what do studies show about vitamin d supplementation","vitamin supplementation","pubmed"],["what causes anaemia","anaemia","medlineplus"]];
+let ei=0,eAuto=!RM,mcpVis=false;
+$("#eq").innerHTML=EQ.map((q,i)=>'<button data-i="'+i+'" aria-pressed="false">'+q[0]+'</button>').join("");
+function showE(i,p){ei=i;const [q,k,s]=EQ[i],kw=k.split(" ");
+ $("#e1").innerHTML=q.split(" ").map(w=>{const c=w.replace(/[^a-z]/gi,"").toLowerCase(),keep=kw.some(x=>c===x||(c.length>3&&c.startsWith(x)));return '<span class="'+(p>=1?(keep?"keep":"drop"):"")+'">'+w+'</span>';}).join("");
+ $("#ek").textContent=k;$("#ek").style.opacity=p>=1?1:0;
+ document.querySelectorAll("#es div").forEach(d=>d.classList.toggle("on",p>=2&&d.dataset.s===s));
+ document.querySelectorAll("#eq button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.i===i));
+}
+document.querySelectorAll("#eq button").forEach(b=>b.onclick=()=>{eAuto=false;showE(+b.dataset.i,2);});
+showE(0,2);
+(async()=>{let i=0;while(true){if(!eAuto)return;if(mcpVis&&!document.hidden){for(let p=0;p<3;p++){if(!eAuto)return;showE(i%EQ.length,p);await sleep(p===2?2800:1300);}i++;}else await sleep(500);}})();
+
+/* ---------- DEMO (mirrors the app's interface and status messages) ---------- */
+const ANS={
+ "summarise this patient's report":{R1:["The Total WBC Count is above the reference range and Lymphocytes are below. All other values are within range.",["Patient Reports"],"Written from the code check",["Searching patient reports…"]],
+   R4:["Total Bilirubin and SGPT are above their respective reference ranges, indicating possible liver issues. Alkaline Phosphatase is within normal. Albumin is below the reference range, suggesting potential protein loss or liver dysfunction. SGOT and Blood Urea Nitrogen are within normal limits. Serum Creatinine and Platelet Count are within normal ranges.",["Patient Reports"],"Recorded answer · 5.7 s",["Searching patient reports…"]],
+   R2:["Haemoglobin, PCV and Ferritin are below the female reference ranges. RBC Count, ESR and Serum Creatinine are within range.",["Patient Reports"],"Written from the code check",["Searching patient reports…"]]},
+ "is the haemoglobin normal":{R1:["The haemoglobin level of 14.6 g/dL is within the reference range of 13.0 to 17.0 g/dL.",["Patient Reports"],"Recorded answer · 9.2 s",["Searching patient reports…"]],
+   R2:["No, the haemoglobin is below the reference range.",["Patient Reports"],"Recorded answer · 1.6 s",["Searching patient reports…"]],
+   R4:["The report does not include a haemoglobin result.",["Patient Reports"],"Written from the report",["Searching patient reports…"]]},
+ "is the platelet count normal":{R4:["The platelet count of 180,000/uL is within the reference range of 150,000 to 450,000.",["Patient Reports"],"Recorded answer · 3.1 s",["Searching patient reports…"]]},
+ "what is the vitamin d level":{R1:["The report does not include a vitamin D level.",["Patient Reports"],"Recorded answer · 1.8 s",["Searching patient reports…"]]},
+ "what is anaemia":{all:["Anaemia is a condition characterized by a decrease in the number of red blood cells or hemoglobin in the blood, leading to reduced oxygen-carrying capacity. Common causes include iron deficiency, vitamin B12 or folate deficiency, chronic diseases, and blood loss. Symptoms may include fatigue, pale skin, and shortness of breath.",["MedlinePlus"],"Recorded answer · 4.1 s",["Searching the medical knowledge base…","Searching MedlinePlus, PubMed and DailyMed…"]]},
+ "what is the usual starting dose of metformin":{all:["The usual starting dose of metformin is 500 mg orally twice a day or 850 mg once a day, given with meals.",["DailyMed"],"Recorded answer · 3.1 s",["Searching the medical knowledge base…","Searching MedlinePlus, PubMed and DailyMed…"]]},
+ "are there trials for advanced breast cancer":{all:["A study of sacituzumab govitecan in metastatic breast cancer is currently recruiting participants. This is a Phase 3 trial.",["ClinicalTrials.gov"],"Recorded answer · 1.9 s",["Searching the medical knowledge base…","Searching MedlinePlus, PubMed and DailyMed…"]]},
+ "what is this medicine for":{photo:["This medicine contains glucosamine and curcumin. Glucosamine is commonly used to support joint health, while curcumin, derived from turmeric, has anti-inflammatory properties. It is prescribed for daily use, but the specific condition being treated is not detailed in the patient's documents.",["Photo (MedGemma 4B)"],"Recorded answer · 3.7 s",["Reading the photo…","Searching the medical knowledge base…"]]}};
+const PAT={R1:{n:"Mr. Daniel Tan",rep:"Complete blood count",chats:[["Haemoglobin check",[["is the haemoglobin normal"]]],["What is anaemia",[["what is anaemia"]]],["Breast cancer trials",[["are there trials for advanced breast cancer"]]]],sug:["summarise this patient's report","is the haemoglobin normal","what is anaemia","are there trials for advanced breast cancer"]},
+ R4:{n:"Mdm. Lim Siew Hong",rep:"Liver and kidney function",chats:[["Report summary",[["summarise this patient's report"]]],["Metformin dose",[["what is the usual starting dose of metformin"]]]],sug:["summarise this patient's report","is the platelet count normal","what is the usual starting dose of metformin","what is anaemia"]},
+ R2:{n:"Ms. Priya Nair",rep:"Haematology",chats:[["Haemoglobin",[["is the haemoglobin normal"]]],["What is anaemia",[["what is anaemia"]]]],sug:["summarise this patient's report","is the haemoglobin normal","what is anaemia"]}};
+let dp="R1",nrep={R1:1,R4:1,R2:1},drv=false,photo=false,busy=false,curChat=-1;
+function lookup(q,ph){const k=q.toLowerCase().replace(/[?.!]+$/,"").trim(),e=ANS[k];if(!e)return null;return ph?e.photo:(e[dp]||e.all||null);}
+function chats(){$("#dchats").innerHTML='<button class="ch new" id="dnew">+ New chat</button>'+PAT[dp].chats.map((c,i)=>'<button class="ch" data-i="'+i+'" aria-current="'+(i===curChat)+'">'+c[0]+'</button>').join("");
+ $("#dnew").onclick=()=>{curChat=-1;empty();chats();};
+ document.querySelectorAll("#dchats .ch[data-i]").forEach(b=>b.onclick=()=>{curChat=+b.dataset.i;const c=PAT[dp].chats[curChat];$("#dc").innerHTML="";c[1].forEach(([q])=>{const e=lookup(q);bubble(q);answerBox(e,true);});chats();});}
+function data(){$("#ddata").textContent=nrep[dp]+" uploaded report"+(nrep[dp]>1?"s":"")+" · "+(nrep[dp]*4)+" stored chunks · "+PAT[dp].chats.length+" saved chats";}
+function sugg(){$("#ds").innerHTML=PAT[dp].sug.map(q=>'<button>'+q+'</button>').join("");document.querySelectorAll("#ds button").forEach(b=>b.onclick=()=>send(b.textContent));}
+function empty(){$("#dc").innerHTML='<div class="empty"><b>MediAssist</b>Your assistant for clinical questions and patient records.<br><span style="font-size:13.5px">Profile: '+PAT[dp].n+' · '+PAT[dp].rep+' report on file</span></div>';}
+function bubble(q,ph){const c=$("#dc");if(c.querySelector(".empty"))c.innerHTML="";c.insertAdjacentHTML("beforeend",'<div class="u">'+(ph?'<span class="att">📷 Medicine label: "Glucosanminie 500 mg, Curcumine Longa…"</span><br>':'')+esc(q)+'</div>');}
+function answerBox(e,instant){const el=document.createElement("div");el.className="a";$("#dc").appendChild(el);
+ if(!e){el.innerHTML="This demo replays answers recorded in testing. Try one of the suggestions below.";return el;}
+ const s=e[1].slice();if(drv&&s[0]==="Patient Reports")s.push("Google Drive");
+ const fill=()=>{el.innerHTML=esc(e[0])+'<div class="srcs"><b>Sources:</b> '+s.join(", ")+' <span style="color:var(--mute)">· '+e[2]+'</span></div>';};
+ if(instant)fill();else el._fill=fill;return el;}
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+async function send(q){q=(q||"").trim();if(!q||busy)return;busy=true;const ph=photo;photo=false;$("#di").value="";curChat=-1;chats();
+ bubble(q,ph);const e=lookup(q,ph),el=answerBox(e,false),c=$("#dc");c.scrollTop=c.scrollHeight;
+ if(e){const st=e[3].slice();if(drv&&e[1][0]==="Patient Reports")st.push("Reading your Google Drive folder…");
+  for(const s of st){el.innerHTML='<span class="status"><i></i>'+s+'</span>';await W(850);}el._fill();}
+ c.scrollTop=c.scrollHeight;busy=false;}
+$("#dsend").onclick=()=>send($("#di").value);$("#di").onkeydown=e=>{if(e.key==="Enter")send($("#di").value);};
+$("#dplus").onclick=()=>{const o=$("#dm").classList.toggle("open");$("#dplus").setAttribute("aria-expanded",o);};
+document.querySelectorAll("#dm button").forEach(b=>b.onclick=()=>{$("#dm").classList.remove("open");$("#dplus").setAttribute("aria-expanded","false");const c=$("#dc");if(c.querySelector(".empty"))c.innerHTML="";
+ if(b.dataset.m==="pdf"){nrep[dp]++;data();c.insertAdjacentHTML("beforeend",'<div class="note"><span class="ic"><i data-lucide="file-check"></i></span>Report added to '+PAT[dp].n+'\'s profile and indexed on the device.</div>');}
+ else{photo=true;$("#di").value="What is this medicine for?";c.insertAdjacentHTML("beforeend",'<div class="note"><span class="ic"><i data-lucide="image"></i></span>Medicine label photo attached. Press send.</div>');}
+ icons();c.scrollTop=c.scrollHeight;});
+$("#dmic").onclick=async()=>{$("#di").value="";$("#di").placeholder="Listening…";for(const w of "what is anaemia".split(" ")){await W(380);$("#di").value+=(($("#di").value)?" ":"")+w;}$("#di").placeholder="Type your question…";$("#di").focus();};
+$("#ddrv").onclick=()=>{drv=!drv;$("#ddrv").textContent=drv?"Connected · read-only":"Connect Google Drive";$("#ddrv").style.background=drv?"var(--mi)":"var(--blue)";$("#ddrv").setAttribute("aria-pressed",drv);};
+$("#dp").onchange=e=>{dp=e.target.value;curChat=-1;chats();data();sugg();empty();};
+document.addEventListener("click",e=>{if(!e.target.closest(".bar"))$("#dm").classList.remove("open");});
+chats();data();sugg();empty();
+
+/* ---------- RESULTS CAROUSEL ---------- */
+const ring=(v,t,c,s)=>{const C=2*Math.PI*30;return '<svg viewBox="0 0 76 76" width="'+(s||84)+'" aria-hidden="true"><circle cx="38" cy="38" r="30" fill="none" stroke="#eef2f4" stroke-width="10"/><circle cx="38" cy="38" r="30" fill="none" stroke="'+c+'" stroke-width="10" stroke-dasharray="'+(C*v/t)+' '+C+'" transform="rotate(-90 38 38)" stroke-linecap="round"/><text x="38" y="43" text-anchor="middle" font-family="Nunito" font-weight="900" font-size="15" fill="#1e2a35">'+Math.round(v/t*100)+'%</text></svg>';};
+const bars=(rows,t)=>'<div class="bars2">'+rows.map(([n,v,c])=>'<span>'+n+'</span><span class="tr"><i style="width:'+(v/t*100)+'%;background:'+c+'"></i></span><span class="mono">'+v+'/'+t+'</span>').join("")+'</div>';
+const G=[
+ ["Reads reports however they arrive","130/160","lab values read correctly from digital PDFs, scans, clean images and phone photos.",'<div class="dn">'+[["Digital PDF",40,"#9fd3e0"],["Scan",36,"#9fd3e0"],["Image",32,"#a9c4ea"],["Phone photo",22,"#f6c3b3"]].map(([n,v,c])=>'<div>'+ring(v,40,c)+'<br>'+n+'<br><span class="mono" style="font-weight:500">'+v+'/40</span></div>').join("")+'</div>'],
+ ["Code judged every lab range right","40/40","in code, against 15 to 36 of 40 when the three models judged ranges on their own.",bars([["Code",40,"#aab8c6"],["Llama 3 8B",36,"#a9c4ea"],["Qwen 2.5 7B",29,"#a9c4ea"],["Llama 3.2 3B",15,"#f6c3b3"]],40)],
+ ["The right public source, every time","28/28","questions routed by Qwen 2.5 7B through MCP. Keyword rules alone got 16, missing every naturally phrased question.",bars([["Qwen 2.5 7B",28,"#a9c4ea"],["Llama 3.2 3B",26,"#c6d8f2"],["Keyword rules",16,"#aab8c6"],["Llama 3 8B",0,"#f6c3b3"]],28)],
+ ["Why Qwen 2.5 7B answers","11/13","answer scenarios passed, the most of the three models tested, at about 3.3 s per answer.",bars([["Qwen 2.5 7B",11,"#a9c4ea"],["Llama 3 8B",8,"#c6d8f2"],["Llama 3.2 3B",8,"#c6d8f2"]],13)],
+ ["Tested end to end","65/68","scenarios passed, alongside 277 automated tests of the code.",'<div class="tm"><div style="background:#9fd3e0">Saving and deleting data · 100<small>profiles, chats, reports, photos</small></div><div style="display:grid;grid-template-rows:47fr 42fr 19fr 14fr;gap:6px;padding:0"><div style="background:#c6d8f2">Reading reports · 47</div><div style="background:#aab8c6">Range checks · 42</div><div style="background:#f6c3b3;padding:6px 10px">Record sign-in · 19</div><div style="background:#f0a58c;padding:4px 10px">Photo privacy · 7</div></div></div><p style="font-size:13px;color:var(--mute);margin-top:6px">277 tests by area. Question handling (62) not shown.</p>'],
+ ["Patient data stays in-house","11/11","privacy checks passed, including that a photographed lab report adds no words to outside searches.",'<div class="dn">'+ring(11,11,"#9fd3e0",150)+'</div>']];
+$("#car").innerHTML=G.map((g,i)=>'<div class="slide'+(i?"":" on")+'" role="group" aria-roledescription="slide" aria-label="'+(i+1)+' of '+G.length+'"><div><h3>'+g[0]+'</h3><div class="big">'+g[1]+'</div><p>'+g[2]+'</p></div><div>'+g[3]+'</div></div>').join("");
+$("#cdots").innerHTML=G.map((g,i)=>'<button aria-label="Show result '+(i+1)+'" class="'+(i?"":"on")+'"></button>').join("");
+let gi=0;function goG(i){gi=(i+G.length)%G.length;document.querySelectorAll("#car .slide").forEach((s,k)=>s.classList.toggle("on",k===gi));document.querySelectorAll("#cdots button").forEach((s,k)=>s.classList.toggle("on",k===gi));}
+$("#cprev").onclick=()=>goG(gi-1);$("#cnext").onclick=()=>goG(gi+1);document.querySelectorAll("#cdots button").forEach((b,i)=>b.onclick=()=>goG(i));
+let sx=0;$("#car").addEventListener("touchstart",e=>sx=e.touches[0].clientX,{passive:true});$("#car").addEventListener("touchend",e=>{const d=e.changedTouches[0].clientX-sx;if(Math.abs(d)>40)goG(gi+(d<0?1:-1));});
+$("#car").addEventListener("keydown",e=>{if(e.key==="ArrowRight")goG(gi+1);if(e.key==="ArrowLeft")goG(gi-1);});$("#car").tabIndex=0;
+
+/* ---------- visibility + reveal ---------- */
+if(RM)document.querySelectorAll(".hflow animateMotion,.hflow animate").forEach(a=>a.remove());
+icons();
+try{const vo=new IntersectionObserver(es=>es.forEach(e=>{if(e.target.id==="sources")hubVis=e.isIntersecting;if(e.target.id==="mcp")mcpVis=e.isIntersecting;}),{threshold:.3});vo.observe($("#sources"));vo.observe($("#mcp"));}catch(e){hubVis=mcpVis=true;}
+try{const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}}),{threshold:.1});document.querySelectorAll(".rv").forEach(el=>io.observe(el));}catch(e){document.querySelectorAll(".rv").forEach(el=>el.classList.add("in"));}
+})();
+</script>
+</body>
+</html>
