@@ -281,7 +281,7 @@ footer b{font-family:var(--f-h);font-size:19px;color:var(--ink)}
 <header class="hero" id="top"><div class="w">
   <h1>Patient records. Trusted sources. <span>One answer.</span></h1>
   <p class="tag">Type it, say it, snap it. <em>Get the answer.</em></p>
-  <p class="sub">MediAssist is a local AI assistant for clinical teams that runs on the hospital's own hardware.</p>
+  <p class="sub">MediAssist is a local AI assistant for clinical teams that runs on-premises, on the hospital's own hardware.</p>
   <div class="ctas"><a class="btn p" href="#demo">Try the demo</a><a class="btn s" href="#sources">How it works</a></div>
   <div class="blocks">
     <a href="#inputs" style="--c:var(--slate);--cs:var(--ss)"><span class="ic"><i data-lucide="camera"></i></span>Multimodal input</a>
@@ -441,7 +441,7 @@ const RM=matchMedia("(prefers-reduced-motion: reduce)").matches,W=ms=>sleep(RM?0
 const icons=()=>{try{lucide.createIcons();}catch(e){}};
 
 /* ---------- PROBLEM ---------- */
-$("#fl").innerHTML=[["lock","Privacy","Cloud tools may store patient data off-site.","server","Runs in-house","All models run on the hospital's own hardware."],
+$("#fl").innerHTML=[["lock","Privacy","Cloud tools may store patient data off-site.","server","Runs on-premises","All models run on the hospital's own hardware."],
  ["alert-triangle","Reliability","Plausible but wrong answers.","calculator","Values checked","Lab values are compared with their ranges in code."],
  ["hourglass","Outdated knowledge","Models go stale; retraining is costly.","globe","Current sources","Looks up DailyMed, PubMed and more when needed."],
  ["database","RAG","Adds evidence, but models can still hallucinate.","folder-heart","Grounded answers","Answers from the patient's own records, with sources."],
@@ -565,7 +565,7 @@ chats();data();sugg();empty();
 const ring=(v,t,c,s)=>{const C=2*Math.PI*30;return '<svg viewBox="0 0 76 76" width="'+(s||84)+'" aria-hidden="true"><circle cx="38" cy="38" r="30" fill="none" stroke="#eef2f4" stroke-width="10"/><circle cx="38" cy="38" r="30" fill="none" stroke="'+c+'" stroke-width="10" stroke-dasharray="'+(C*v/t)+' '+C+'" transform="rotate(-90 38 38)"/><text x="38" y="43" text-anchor="middle" font-family="Nunito" font-weight="900" font-size="15" fill="#1e2a35">'+Math.round(v/t*100)+'%</text></svg>';};
 const bars=(rows,t)=>'<div class="bars2">'+rows.map(([n,v,c])=>'<span>'+n+'</span><span class="tr"><i style="width:'+(v/t*100)+'%;background:'+c+'"></i></span><span class="mono">'+v+'/'+t+'</span>').join("")+'</div>';
 const G=[
- ["Patient data stays in-house","19/20","privacy checks passed, including that a photographed lab report adds no words to outside searches. One miss: a name that is also a common word, like Tan, can still be sent.",'<div class="dn">'+ring(19,20,"#9fd3e0",150)+'</div>'],
+ ["Patient data stays on-premises","19/20","privacy checks passed, including that a photographed lab report adds no words to outside searches. One miss: a name that is also a common word, like Tan, can still be sent.",'<div class="dn">'+ring(19,20,"#9fd3e0",150)+'</div>'],
  ["The right public source, nearly every time","39/40","questions routed by Qwen 2.5 7B through MCP: 20 of 20 in medical terms and 19 of 20 in plain English. Keyword rules alone got 20 of 40.",bars([["Qwen 2.5 7B",39,"#a9c4ea"],["Llama 3.2 3B",35,"#c6d8f2"],["Keyword rules",20,"#aab8c6"],["Llama 3 8B",0,"#f6c3b3"]],40)],
  ["Reads reports however they arrive","130/160","lab values read correctly from digital PDFs, scans, clean images and phone photos.",'<div class="dn">'+[["Digital PDF",40,"#9fd3e0"],["Scan",36,"#9fd3e0"],["Image",32,"#a9c4ea"],["Phone photo",22,"#f6c3b3"]].map(([n,v,c])=>'<div>'+ring(v,40,c)+'<br>'+n+'<br><span class="mono" style="font-weight:500">'+v+'/40</span></div>').join("")+'</div>'],
  ["Tested end to end","108/116","scenarios passed, including 15 of 16 retrieval scenarios, alongside 277 automated tests of the code.",'<div class="tm"><div style="background:#9fd3e0">Saving and deleting data · 100<small>profiles, chats, reports, photos</small></div><div style="display:grid;grid-template-rows:47fr 42fr 19fr 14fr;gap:6px;padding:0"><div style="background:#c6d8f2">Reading reports · 47</div><div style="background:#aab8c6">Range checks · 42</div><div style="background:#f6c3b3;padding:6px 10px">Record sign-in · 19</div><div style="background:#f0a58c;padding:4px 10px">Photo privacy · 7</div></div></div><p style="font-size:13px;color:var(--mute);margin-top:6px">277 tests by area. Question handling (62) not shown.</p>'],
