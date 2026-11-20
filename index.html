@@ -63,7 +63,7 @@ section{padding:96px 0}
 /* PROBLEM flip */
 .prob{background:var(--paper)}
 .flip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
-@media (max-width:900px){.flip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:900px){.flip{grid-template-columns:repeat(2,minmax(0,1fr))}.flip .fc:last-child{grid-column:1/-1}}
 @media (max-width:480px){.flip{grid-template-columns:minmax(0,1fr)}}
 .fc{perspective:800px;height:200px}
 .fi{position:relative;width:100%;height:100%;transition:transform .7s;transform-style:preserve-3d}
@@ -92,7 +92,7 @@ section{padding:96px 0}
 .node small{display:block;font-weight:700;color:var(--mute);font-size:11.5px}
 .node .nnote{display:block;font-weight:700;font-size:12px;margin-top:3px;min-height:16px}
 .node.on{background:var(--c);color:#fff}.node.on small,.node.on .nnote{color:#fff}
-.node.miss{box-shadow:inset 0 0 0 2px var(--sp);color:var(--mute)}
+.node.miss{box-shadow:inset 0 0 0 2px #6f8290;color:var(--mute)}
 .core{background:var(--ink);color:#fff;border-radius:50%;width:110px;height:110px;display:grid;place-items:center;font-size:15px}
 .lines line{stroke:#c4d2da;stroke-width:2.5;stroke-dasharray:6 6;transition:stroke .4s}
 .lines line.on{stroke:var(--c);stroke-dasharray:none;stroke-width:3.5}
@@ -123,7 +123,7 @@ section{padding:96px 0}
 /* MCP */
 .qline{font-size:clamp(20px,2.6vw,26px);font-family:var(--f-h);font-weight:800;min-height:40px;margin-top:20px}
 .qline span{display:inline-block;transition:all .6s;margin-right:7px}
-.qline span.drop{opacity:.25;text-decoration:line-through;text-decoration-color:var(--pp)}
+.qline span.drop{opacity:.55;text-decoration:line-through;text-decoration-color:var(--pp)}
 .qline span.keep{background:var(--pl);border-radius:6px;padding:0 6px}
 .wall{margin-top:22px;border-top:2.5px dashed var(--tp);position:relative;padding-top:22px;min-height:48px}
 .wall::before{content:"hospital boundary";position:absolute;top:-12px;left:0;background:var(--bg);padding-right:8px;font-size:12.5px;font-weight:800;color:var(--teal)}
@@ -194,10 +194,10 @@ section{padding:96px 0}
 .sb select{font:inherit;font-size:15px;border:1.5px solid var(--line);border-radius:10px;padding:0 10px;min-height:44px;background:#fff}
 .sb .hint{font-size:12px;color:var(--mute)}
 .sb .sec{font-weight:800;font-size:13.5px;margin-top:8px}
-.sb .ch{display:block;width:100%;text-align:left;border:0;background:transparent;font-size:13.5px;padding:0 10px;min-height:40px;border-radius:9px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb .ch{display:block;width:100%;text-align:left;border:0;background:transparent;font-size:13.5px;padding:0 10px;min-height:44px;border-radius:9px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sb .ch:hover{background:#fff}.sb .ch[aria-current=true]{background:#fff;box-shadow:inset 0 0 0 1.5px var(--tp);color:var(--ink)}
 .sb .ch.new{border:1px solid var(--line);background:#fff}
-.sb .stog{display:flex;justify-content:space-between;align-items:center;border:0;background:transparent;padding:0;min-height:36px;font:inherit;font-weight:800;font-size:13.5px;color:var(--ink);text-align:left;cursor:pointer}
+.sb .stog{display:flex;justify-content:space-between;align-items:center;border:0;background:transparent;padding:0;min-height:44px;font:inherit;font-weight:800;font-size:13.5px;color:var(--ink);text-align:left;cursor:pointer}
 .sb .stog small{font-weight:600;color:var(--mute)}.sb .stog .chev{transition:transform .2s}.sb .stog[aria-expanded=false] .chev{transform:rotate(-90deg)}
 #dchats{display:flex;flex-direction:column;gap:2px;max-height:200px;overflow:auto}#dchats.shut{display:none}
 .empty .sv{display:inline-block;margin-top:10px;font-size:13px;background:var(--ts);color:var(--ti);border-radius:20px;padding:4px 12px;font-weight:700}
@@ -553,7 +553,7 @@ document.addEventListener("click",e=>{if(!e.target.closest(".bar"))$("#dm").clas
 chats();data();sugg();empty();
 
 /* ---------- RESULTS CAROUSEL ---------- */
-const ring=(v,t,c,s)=>{const C=2*Math.PI*30;return '<svg viewBox="0 0 76 76" width="'+(s||84)+'" aria-hidden="true"><circle cx="38" cy="38" r="30" fill="none" stroke="#eef2f4" stroke-width="10"/><circle cx="38" cy="38" r="30" fill="none" stroke="'+c+'" stroke-width="10" stroke-dasharray="'+(C*v/t)+' '+C+'" transform="rotate(-90 38 38)" stroke-linecap="round"/><text x="38" y="43" text-anchor="middle" font-family="Nunito" font-weight="900" font-size="15" fill="#1e2a35">'+Math.round(v/t*100)+'%</text></svg>';};
+const ring=(v,t,c,s)=>{const C=2*Math.PI*30;return '<svg viewBox="0 0 76 76" width="'+(s||84)+'" aria-hidden="true"><circle cx="38" cy="38" r="30" fill="none" stroke="#eef2f4" stroke-width="10"/><circle cx="38" cy="38" r="30" fill="none" stroke="'+c+'" stroke-width="10" stroke-dasharray="'+(C*v/t)+' '+C+'" transform="rotate(-90 38 38)"/><text x="38" y="43" text-anchor="middle" font-family="Nunito" font-weight="900" font-size="15" fill="#1e2a35">'+Math.round(v/t*100)+'%</text></svg>';};
 const bars=(rows,t)=>'<div class="bars2">'+rows.map(([n,v,c])=>'<span>'+n+'</span><span class="tr"><i style="width:'+(v/t*100)+'%;background:'+c+'"></i></span><span class="mono">'+v+'/'+t+'</span>').join("")+'</div>';
 const G=[
  ["Patient data stays in-house","19/20","privacy checks passed, including that a photographed lab report adds no words to outside searches. One miss: a name that is also a common word, like Tan, can still be sent.",'<div class="dn">'+ring(19,20,"#9fd3e0",150)+'</div>'],
