@@ -87,7 +87,7 @@ section{padding:96px 0}
 .hnote{font-size:13px;color:var(--mute);margin-top:10px}
 .hub{position:relative;height:360px}
 .hub svg{position:absolute;inset:0;width:100%;height:100%}
-.node{position:absolute;transform:translate(-50%,-50%);background:#fff;border-radius:16px;padding:10px 12px;font-size:14px;font-weight:800;text-align:center;box-shadow:0 8px 22px -12px rgba(0,0,0,.3);transition:all .4s;width:150px}
+.node{position:absolute;transform:translate(-50%,-50%);background:#fff;border-radius:16px;padding:10px 12px;font-size:14px;font-weight:800;text-align:center;box-shadow:0 8px 22px -12px rgba(0,0,0,.3);transition:all .25s;width:150px}
 .node small{display:block;font-weight:700;color:var(--mute);font-size:11.5px}
 .node .nnote{display:block;font-weight:700;font-size:12px;margin-top:3px;min-height:16px}
 .node.on{background:var(--c);color:#fff}.node.on small,.node.on .nnote{color:#fff}
@@ -282,21 +282,21 @@ footer b{font-family:var(--f-h);font-size:19px;color:var(--ink)}
 </div></section>
 
 <section id="sources"><div class="w">
-  <div class="sh rv"><h2>Where answers come from.</h2><p>MediAssist searches the patient's reports and a medical knowledge base on the device first. It reaches public sources only when nothing local answers the question.</p></div>
+  <div class="sh rv"><h2>Where answers come from.</h2><p>MediAssist searches the patient's reports and a medical knowledge base on the device first. It reaches public sources only when nothing local answers the question. A linked records folder is searched too.</p></div>
   <div class="hgrid rv">
     <div>
       <div class="pbar" aria-live="polite"><span class="md" id="am"></span><span id="aq"></span><span class="cur" aria-hidden="true"></span></div>
       <div class="chips" id="ach" role="group" aria-label="Example questions"></div>
       <div class="hans" id="aa" aria-live="polite"></div>
-      <p class="hnote">Tap an example to see which sources it uses. Grey ring: searched, no match. Filled: used for the answer.</p>
+      <p class="hnote">Tap an example to see which sources it uses. Ring: searched, no match. Filled: used for the answer. The tag in the question bar shows how it was asked.</p>
     </div>
-    <div class="hub" id="hub" role="img" aria-label="MediAssist connected to patient's reports, knowledge base, photo or voice input, and public sources">
+    <div class="hub" id="hub" role="img" aria-label="MediAssist connected to four answer sources: patient's reports, knowledge base, linked records and public sources">
       <svg viewBox="0 0 500 360" preserveAspectRatio="none" aria-hidden="true"><g class="lines">
-        <line data-k="pat" x1="250" y1="180" x2="95" y2="60" style="--c:#1a7189"/><line data-k="kb" x1="250" y1="180" x2="405" y2="60" style="--c:#355f9e"/><line data-k="img" x1="250" y1="180" x2="95" y2="300" style="--c:#2f4a5e"/><line data-k="mcp" x1="250" y1="180" x2="405" y2="300" style="--c:#b5492f"/></g></svg>
+        <line data-k="pat" x1="250" y1="180" x2="95" y2="60" style="--c:#1a7189"/><line data-k="kb" x1="250" y1="180" x2="405" y2="60" style="--c:#355f9e"/><line data-k="rec" x1="250" y1="180" x2="95" y2="300" style="--c:#1a7189"/><line data-k="mcp" x1="250" y1="180" x2="405" y2="300" style="--c:#b5492f"/></g></svg>
       <div class="node core" style="left:50%;top:50%">MediAssist</div>
       <div class="node" data-k="pat" style="left:19%;top:16%;--c:var(--teal)">Patient's reports<small>RAG</small><span class="nnote"></span></div>
       <div class="node" data-k="kb" style="left:81%;top:16%;--c:var(--blue)">Knowledge base<small>RAG</small><span class="nnote"></span></div>
-      <div class="node" data-k="img" style="left:19%;top:84%;--c:var(--slate)">Photo or voice<small>multimodal</small><span class="nnote"></span></div>
+      <div class="node" data-k="rec" style="left:19%;top:84%;--c:var(--teal)">Linked records<small>MCP · Google Drive</small><span class="nnote"></span></div>
       <div class="node" data-k="mcp" style="left:81%;top:84%;--c:var(--peach)">Public sources<small>MCP</small><span class="nnote"></span></div>
     </div>
   </div>
@@ -436,10 +436,11 @@ $("#flb").onclick=()=>{const f=$("#fl").classList.toggle("flipped");$("#flb").te
 /* ---------- SOURCES HUB (routing follows app.py) ---------- */
 const AX=[
  {c:"Summarise a report",m:["keyboard","Typed"],q:"Summarise Mdm. Lim's report",use:["pat"],miss:[],note:{pat:"whole report"},a:["From the patient's reports","Total Bilirubin and SGPT are above their reference ranges. Albumin is below. Other values are within range."]},
+ {c:"Past results",m:["keyboard","Typed"],q:"Has the WBC count changed since last year?",use:["pat","rec"],miss:[],note:{pat:"this week's blood count",rec:"last year's report"},a:["From the patient's reports and linked records","WBC is 11,800 now, above range. Last year it was 9,200, within range."]},
  {c:"Prediabetes",m:["keyboard","Typed"],q:"How is prediabetes diagnosed?",use:["kb"],miss:["pat"],note:{kb:"prediabetes guideline"},a:["From the knowledge base","Matched in the guideline stored on the device, so no public search runs."]},
- {c:"Anaemia",m:["mic","Voice"],q:"What is anaemia?",use:["img","mcp"],miss:["pat","kb"],note:{img:"speech to text",mcp:"MedlinePlus"},a:["From a public source, via MCP","A decrease in red blood cells or haemoglobin, which reduces the blood's oxygen-carrying capacity."]},
+ {c:"Anaemia",m:["mic","Voice"],q:"What is anaemia?",use:["mcp"],miss:["pat","kb"],note:{mcp:"MedlinePlus"},a:["From a public source, via MCP","A decrease in red blood cells or haemoglobin, which reduces the blood's oxygen-carrying capacity."]},
  {c:"Metformin dose",m:["keyboard","Typed"],q:"Usual starting dose of metformin?",use:["mcp"],miss:["pat","kb"],note:{mcp:"DailyMed"},a:["From DailyMed, via MCP","500 mg twice a day or 850 mg once a day, given with meals."]},
- {c:"Medicine photo",m:["camera","Photo"],q:"What is this medicine for?",use:["img","mcp"],miss:["pat","kb"],note:{img:"label read by MedGemma",mcp:"label words searched"},a:["From the photo, read by MedGemma 4B","Glucosamine and curcumin: glucosamine supports joint health; curcumin has anti-inflammatory properties."]}];
+ {c:"Medicine photo",m:["camera","Photo"],q:"What is this medicine for?",use:["mcp"],miss:["pat","kb"],note:{mcp:"label words, DailyMed"},a:["From the label photo, read by MedGemma 4B, and DailyMed","Glucosamine and curcumin: glucosamine supports joint health; curcumin has anti-inflammatory properties."]}];
 $("#ach").innerHTML=AX.map((x,i)=>'<button data-i="'+i+'" aria-pressed="false">'+x.c+'</button>').join("");
 let ai=0,aAuto=true,tok=0,hubVis=false;
 async function playA(i){const my=++tok,x=AX[i];ai=i;
