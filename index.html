@@ -73,7 +73,7 @@ section{padding:96px 0}
 .fa b,.fb b{min-height:2.5em;display:flex;align-items:center;justify-content:center;line-height:1.2}
 .fa{background:var(--ps)}.fa .ic{font-size:24px;color:var(--peach);margin:0 auto}.fa b{color:var(--peach);font-family:var(--f-h);font-size:17px}
 .fb{background:var(--ts);transform:rotateY(180deg)}.fb .ic{font-size:24px;color:var(--teal);margin:0 auto}.fb b{color:var(--ti);font-family:var(--f-h);font-size:17px}
-.fbtn{margin-top:18px}
+.fbtn{display:flex;width:fit-content;margin:18px auto 0}
 
 /* HUB */
 .hgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:34px;align-items:center}
@@ -82,6 +82,7 @@ section{padding:96px 0}
 .pbar .md{font-size:13px;font-weight:800;border-radius:20px;padding:4px 10px;background:var(--bs);color:var(--blue);white-space:nowrap;display:inline-flex;gap:5px;align-items:center}
 .cur{width:2px;height:20px;background:var(--teal);animation:blink 1s infinite}@keyframes blink{50%{opacity:0}}
 .hgrid .chips{margin-top:14px}
+@media (max-width:600px){#eq{flex-direction:column}#eq button{width:100%;text-align:left;border-radius:14px;padding:10px 16px;line-height:1.35}}
 .hans{margin-top:14px;background:#fff;border-radius:16px;padding:14px 16px;font-size:15.5px;min-height:84px}
 .hans b{display:block;font-size:13px;color:var(--teal);margin-bottom:3px}
 .hnote{font-size:13px;color:var(--mute);margin-top:10px}
@@ -196,6 +197,12 @@ section{padding:96px 0}
 .sb .ch{display:block;width:100%;text-align:left;border:0;background:transparent;font-size:13.5px;padding:0 10px;min-height:40px;border-radius:9px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sb .ch:hover{background:#fff}.sb .ch[aria-current=true]{background:#fff;box-shadow:inset 0 0 0 1.5px var(--tp);color:var(--ink)}
 .sb .ch.new{border:1px solid var(--line);background:#fff}
+.sb .stog{display:flex;justify-content:space-between;align-items:center;border:0;background:transparent;padding:0;min-height:36px;font:inherit;font-weight:800;font-size:13.5px;color:var(--ink);text-align:left;cursor:pointer}
+.sb .stog small{font-weight:600;color:var(--mute)}.sb .stog .chev{transition:transform .2s}.sb .stog[aria-expanded=false] .chev{transform:rotate(-90deg)}
+#dchats{display:flex;flex-direction:column;gap:2px;max-height:200px;overflow:auto}#dchats.shut{display:none}
+.empty .sv{display:inline-block;margin-top:10px;font-size:13px;background:var(--ts);color:var(--ti);border-radius:20px;padding:4px 12px;font-weight:700}
+.a .kw{display:inline-block;background:var(--ps);color:var(--peach);border-radius:6px;padding:0 6px;font-weight:800;margin:0 2px}
+.a ol{margin:8px 0 6px;padding-left:20px}.a ol li{margin:3px 0}
 .sb .drv{font-size:12.5px;background:#fff;border-radius:10px;padding:10px;border:1px solid var(--line);color:var(--ink2)}
 .sb .drv button{margin-top:8px;width:100%;border:0;background:var(--blue);color:#fff;border-radius:9px;min-height:40px;font-weight:800;font-size:13px}
 .sb .data{font-size:12.5px;color:var(--mute)}
@@ -296,7 +303,7 @@ footer b{font-family:var(--f-h);font-size:19px;color:var(--ink)}
       <div class="node core" style="left:50%;top:50%">MediAssist</div>
       <div class="node" data-k="pat" style="left:19%;top:16%;--c:var(--teal)">Patient's reports<small>RAG</small><span class="nnote"></span></div>
       <div class="node" data-k="kb" style="left:81%;top:16%;--c:var(--blue)">Knowledge base<small>RAG</small><span class="nnote"></span></div>
-      <div class="node" data-k="rec" style="left:19%;top:84%;--c:var(--teal)">Linked records<small>MCP · Google Drive</small><span class="nnote"></span></div>
+      <div class="node" data-k="rec" style="left:19%;top:84%;--c:var(--teal)">Linked records<small>MCP · record tool</small><span class="nnote"></span></div>
       <div class="node" data-k="mcp" style="left:81%;top:84%;--c:var(--peach)">Public sources<small>MCP</small><span class="nnote"></span></div>
     </div>
   </div>
@@ -385,10 +392,11 @@ footer b{font-family:var(--f-h);font-size:19px;color:var(--ink)}
       <label for="dp">Profile</label>
       <select id="dp"><option value="R1">Mr. Daniel Tan</option><option value="R4">Mdm. Lim Siew Hong</option><option value="R2">Ms. Priya Nair</option></select>
       <span class="hint">Each profile keeps its own chats and reports.</span>
-      <span class="sec">Chats</span>
+      <button class="sec stog" id="dtog" aria-expanded="true" aria-controls="dlist"><span>Chats <small id="dcount"></small></span><span class="ic chev"><i data-lucide="chevron-down"></i></span></button>
+      <button class="ch new" id="dnew">+ New chat</button>
       <div id="dchats"></div>
-      <span class="sec hm">Google Drive</span>
-      <div class="drv">Read-only record folder, a stand-in for NEHR access.<button id="ddrv" aria-pressed="false">Connect Google Drive</button></div>
+      <span class="sec hm">Linked records</span>
+      <div class="drv">Read-only records folder, a stand-in for hospital record access.<button id="ddrv" aria-pressed="false">Link records folder</button></div>
       <span class="sec hm">Data</span><span class="data" id="ddata"></span>
     </aside>
     <div class="main">
@@ -439,7 +447,6 @@ const AX=[
  {c:"Past results",m:["keyboard","Typed"],q:"Has the WBC count changed since last year?",use:["pat","rec"],miss:[],note:{pat:"this week's blood count",rec:"last year's report"},a:["From the patient's reports and linked records","WBC is 11,800 now, above range. Last year it was 9,200, within range."]},
  {c:"Prediabetes",m:["keyboard","Typed"],q:"How is prediabetes diagnosed?",use:["kb"],miss:["pat"],note:{kb:"prediabetes guideline"},a:["From the knowledge base","Matched in the guideline stored on the device, so no public search runs."]},
  {c:"Anaemia",m:["mic","Voice"],q:"What is anaemia?",use:["mcp"],miss:["pat","kb"],note:{mcp:"MedlinePlus"},a:["From a public source, via MCP","A decrease in red blood cells or haemoglobin, which reduces the blood's oxygen-carrying capacity."]},
- {c:"Metformin dose",m:["keyboard","Typed"],q:"Usual starting dose of metformin?",use:["mcp"],miss:["pat","kb"],note:{mcp:"DailyMed"},a:["From DailyMed, via MCP","500 mg twice a day or 850 mg once a day, given with meals."]},
  {c:"Medicine photo",m:["camera","Photo"],q:"What is this medicine for?",use:["mcp"],miss:["pat","kb"],note:{mcp:"label words, DailyMed"},a:["From the label photo, read by MedGemma 4B, and DailyMed","Glucosamine and curcumin: glucosamine supports joint health; curcumin has anti-inflammatory properties."]}];
 $("#ach").innerHTML=AX.map((x,i)=>'<button data-i="'+i+'" aria-pressed="false">'+x.c+'</button>').join("");
 let ai=0,aAuto=true,tok=0,hubVis=false;
@@ -505,23 +512,32 @@ const PAT={R1:{n:"Mr. Daniel Tan",rep:"Complete blood count",chats:[["Haemoglobi
  R4:{n:"Mdm. Lim Siew Hong",rep:"Liver and kidney function",chats:[["Report summary",[["summarise this patient's report"]]],["Metformin dose",[["what is the usual starting dose of metformin"]]]],sug:["summarise this patient's report","is the platelet count normal","what is the usual starting dose of metformin","what is anaemia"]},
  R2:{n:"Ms. Priya Nair",rep:"Haematology",chats:[["Haemoglobin",[["is the haemoglobin normal"]]],["What is anaemia",[["what is anaemia"]]]],sug:["summarise this patient's report","is the haemoglobin normal","what is anaemia"]}};
 let dp="R1",nrep={R1:1,R4:1,R2:1},drv=false,photo=false,busy=false,curChat=-1;
-function lookup(q,ph){const k=q.toLowerCase().replace(/[?.!]+$/,"").trim(),e=ANS[k];if(!e)return null;return ph?e.photo:(e[dp]||e.all||null);}
-function chats(){$("#dchats").innerHTML='<button class="ch new" id="dnew">+ New chat</button>'+PAT[dp].chats.map((c,i)=>'<button class="ch" data-i="'+i+'" aria-current="'+(i===curChat)+'">'+c[0]+'</button>').join("");
- $("#dnew").onclick=()=>{curChat=-1;empty();chats();};
- document.querySelectorAll("#dchats .ch[data-i]").forEach(b=>b.onclick=()=>{curChat=+b.dataset.i;const c=PAT[dp].chats[curChat];$("#dc").innerHTML="";c[1].forEach(([q])=>{const e=lookup(q);bubble(q);answerBox(e,true);});chats();});}
+const NEAR=[[/an(a)?emia/,"what is anaemia"],[/ha?emoglobin|\bhb\b/,"is the haemoglobin normal"],[/platelet/,"is the platelet count normal"],[/vitamin d/,"what is the vitamin d level"],[/metformin/,"what is the usual starting dose of metformin"],[/trial.*breast|breast.*trial/,"are there trials for advanced breast cancer"],[/summar/,"summarise this patient's report"]];
+function lookup(q,ph){let k=q.toLowerCase().replace(/[?.!\s]+$/,"").trim();if(ph)k="what is this medicine for";if(!ANS[k]){const m=NEAR.find(([r])=>r.test(k));if(!m)return null;k=m[1];}const e=ANS[k];return ph?e.photo:(e[dp]||e.all||null);}
+const STOP=new Set("a an the is are was were be been do does did what whats which who whom how why when where can could should would will i me my we our you your it its this that these those of for to in on at by with about and or not no any anything there their them they he she his her patient patients patient's mr mrs ms mdm dr please tell explain show give know need much many some get have has had".split(" "));
+function demoKeywords(q){return q.toLowerCase().replace(/[^a-z0-9' ]/g," ").split(/\s+/).filter(w=>w&&!STOP.has(w)&&!STOP.has(w.replace(/'s$/,""))&&w.length>1);}
+function demoSource(q){q=q.toLowerCase();if(/dose|dosage|side effect|interact|contraindicat|tablet|\bmg\b|overdose|warning/.test(q))return"DailyMed";if(/trial|recruit|join a study|researchers testing|new treatment/.test(q))return"ClinicalTrials.gov";if(/stud(y|ies)|evidence|research|meta-analys|systematic review|proven/.test(q))return"PubMed";return"MedlinePlus";}
+function chats(){const L=PAT[dp].chats;$("#dcount").textContent="· "+L.length+" saved";
+ $("#dchats").innerHTML=L.map((c,i)=>'<button class="ch" data-i="'+i+'" aria-current="'+(i===curChat)+'">'+esc(c[0])+'</button>').join("");
+ document.querySelectorAll("#dchats .ch[data-i]").forEach(b=>b.onclick=()=>{curChat=+b.dataset.i;const c=PAT[dp].chats[curChat];$("#dc").innerHTML="";c[1].forEach(([q,ph])=>{bubble(q,ph);answerBox(lookup(q,ph),true,q);});chats();});}
+function setTog(open){$("#dtog").setAttribute("aria-expanded",open);$("#dchats").classList.toggle("shut",!open);}
+$("#dtog").onclick=()=>setTog($("#dtog").getAttribute("aria-expanded")!=="true");
+$("#dnew").onclick=()=>{curChat=-1;empty();chats();};
+setTog(!matchMedia("(max-width:820px)").matches);
 function data(){$("#ddata").textContent=nrep[dp]+" uploaded report"+(nrep[dp]>1?"s":"")+" · "+(nrep[dp]*4)+" stored chunks · "+PAT[dp].chats.length+" saved chats";}
 function sugg(){$("#ds").innerHTML=PAT[dp].sug.map(q=>'<button>'+q+'</button>').join("");document.querySelectorAll("#ds button").forEach(b=>b.onclick=()=>send(b.textContent));}
-function empty(){$("#dc").innerHTML='<div class="empty"><b>MediAssist</b>Your assistant for clinical questions and patient records.<br><span style="font-size:13.5px">Profile: '+PAT[dp].n+' · '+PAT[dp].rep+' report on file</span></div>';}
+function empty(){$("#dc").innerHTML='<div class="empty"><b>MediAssist</b>Your assistant for clinical questions and patient records.<br><span style="font-size:13.5px">Profile: '+PAT[dp].n+' · '+PAT[dp].rep+' report on file</span><br><span class="sv">New chat · saved to '+PAT[dp].n+'\'s chats after your first question</span></div>';}
 function bubble(q,ph){const c=$("#dc");if(c.querySelector(".empty"))c.innerHTML="";c.insertAdjacentHTML("beforeend",'<div class="u">'+(ph?'<span class="att">📷 Medicine label: "Glucosanminie 500 mg, Curcumine Longa…"</span><br>':'')+esc(q)+'</div>');}
-function answerBox(e,instant){const el=document.createElement("div");el.className="a";$("#dc").appendChild(el);
- if(!e){el.innerHTML="This demo replays answers recorded in testing. Try one of the suggestions below.";return el;}
- const s=e[1].slice();if(drv&&s[0]==="Patient Reports")s.push("Google Drive");
+function answerBox(e,instant,q){const el=document.createElement("div");el.className="a";$("#dc").appendChild(el);
+ if(!e){const kw=demoKeywords(q||"");el.innerHTML='<b>No recorded answer for this one.</b> The demo only replays answers recorded in testing, so it cannot answer new questions live. In the app, MediAssist would:<ol><li>Search '+esc(PAT[dp].n)+'\'s reports and the knowledge base on the device.</li><li>If neither answers it, send only '+(kw.length?kw.map(w=>'<span class="kw">'+esc(w)+'</span>').join(" "):"the medical keywords")+' to '+demoSource(q||"")+' through MCP.</li></ol><span style="font-size:13.5px;color:var(--mute)">Try a suggestion below to see a full answer.</span>';return el;}
+ const s=e[1].slice();if(drv&&s[0]==="Patient Reports")s.push("Linked records");
  const fill=()=>{el.innerHTML=esc(e[0])+'<div class="srcs"><b>Sources:</b> '+s.join(", ")+' <span style="color:var(--mute)">· '+e[2]+'</span></div>';};
  if(instant)fill();else el._fill=fill;return el;}
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-async function send(q){q=(q||"").trim();if(!q||busy)return;busy=true;const ph=photo;photo=false;$("#di").value="";curChat=-1;chats();
- bubble(q,ph);const e=lookup(q,ph),el=answerBox(e,false),c=$("#dc");c.scrollTop=c.scrollHeight;
- if(e){const st=e[3].slice();if(drv&&e[1][0]==="Patient Reports")st.push("Reading your Google Drive folder…");
+async function send(q){q=(q||"").trim();if(!q||busy)return;busy=true;const ph=photo;photo=false;$("#di").value="";
+ const L=PAT[dp].chats;if(curChat<0){L.unshift([q.length>34?q.slice(0,32)+"…":q.charAt(0).toUpperCase()+q.slice(1),[[q,ph]]]);curChat=0;}else L[curChat][1].push([q,ph]);chats();data();
+ bubble(q,ph);const e=lookup(q,ph),el=answerBox(e,false,q),c=$("#dc");c.scrollTop=c.scrollHeight;
+ if(e){const st=e[3].slice();if(drv&&e[1][0]==="Patient Reports")st.push("Reading the linked records folder…");
   for(const s of st){el.innerHTML='<span class="status"><i></i>'+s+'</span>';await W(850);}el._fill();}
  c.scrollTop=c.scrollHeight;busy=false;}
 $("#dsend").onclick=()=>send($("#di").value);$("#di").onkeydown=e=>{if(e.key==="Enter")send($("#di").value);};
@@ -531,7 +547,7 @@ document.querySelectorAll("#dm button").forEach(b=>b.onclick=()=>{$("#dm").class
  else{photo=true;$("#di").value="What is this medicine for?";c.insertAdjacentHTML("beforeend",'<div class="note"><span class="ic"><i data-lucide="image"></i></span>Medicine label photo attached. Press send.</div>');}
  icons();c.scrollTop=c.scrollHeight;});
 $("#dmic").onclick=async()=>{$("#di").value="";$("#di").placeholder="Listening…";for(const w of "what is anaemia".split(" ")){await W(380);$("#di").value+=(($("#di").value)?" ":"")+w;}$("#di").placeholder="Type your question…";$("#di").focus();};
-$("#ddrv").onclick=()=>{drv=!drv;$("#ddrv").textContent=drv?"Connected · read-only":"Connect Google Drive";$("#ddrv").style.background=drv?"var(--mi)":"var(--blue)";$("#ddrv").setAttribute("aria-pressed",drv);};
+$("#ddrv").onclick=()=>{drv=!drv;$("#ddrv").textContent=drv?"Linked · read-only":"Link records folder";$("#ddrv").style.background=drv?"var(--mi)":"var(--blue)";$("#ddrv").setAttribute("aria-pressed",drv);};
 $("#dp").onchange=e=>{dp=e.target.value;curChat=-1;chats();data();sugg();empty();};
 document.addEventListener("click",e=>{if(!e.target.closest(".bar"))$("#dm").classList.remove("open");});
 chats();data();sugg();empty();
